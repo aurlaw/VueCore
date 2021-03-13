@@ -1,4 +1,4 @@
-# vue-core
+# VueCore
 
 ## Project setup
 ```
