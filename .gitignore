@@ -1,6 +1,6 @@
 .DS_Store
 node_modules
-/dist
+dist
 
 
 # local env files
@@ -470,3 +470,4 @@ $RECYCLE.BIN/
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+VueCore/wwwroot/dist/index.html
