@@ -447,3 +447,21 @@ $RECYCLE.BIN/
 !.vscode/launch.json
 !.vscode/extensions.json
 dist
+
+## dist
+bundle.css
+bundle.css.map
+bundle.js
+bundle.js.map
+App.*.css
+App.*.js
+App.*.js.map
+CommentBox.*.css
+CommentBox.*.js
+CommentBox.*.js.map
+Privacy.*.css
+Privacy.*.js
+Privacy.*.js.map
+WebWorker.*.css
+WebWorker.*.js
+WebWorker.*.js.map
