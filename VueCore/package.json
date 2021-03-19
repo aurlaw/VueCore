@@ -7,7 +7,7 @@
     "start": "run-p start:parcel start:dotnet",
     "start:parcel": "parcel watch ./ClientComponents/bundle.js --out-dir ./wwwroot/dist",
     "start:dotnet": "dotnet watch run",
-    "build": "clean && run-s build:parcel build:dotnet",
+    "build": "run-s build:parcel build:dotnet",
     "build:parcel": "parcel build ./ClientComponents/bundle.js --out-dir ./wwwroot/dist",
     "build:dotnet": "dotnet publish -c Release"
   },
@@ -23,7 +23,7 @@
     "vue-template-compiler": "^2.6.12"
   },
   "resolutions": {
-    "@babel/preset-env": "^7.0.0"
+    "@babel/preset-env": "^7.18.8"
   },
   "browserslist": [
     "> 1%",

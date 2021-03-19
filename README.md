@@ -32,22 +32,62 @@ npm:
 ```npm install -g parcel-bundler```
 
 
-### Running with Watch:
+### Installation:
 
 ```
 cd VueCore
+```
+
+Yarn:
+
+```
 yarn install
 ```
 
+npm:
+
+NPM Only. Ignore if using Yarn. Add the following to the ```scripts``` section within 
+```package.json```
+
+```
+  "scripts": {
+    "preinstall": "npx npm-force-resolutions",
+  }
+```
+*This is addresses a known bug with Parcel and Babel Preset-env.*
+https://github.com/parcel-bundler/parcel/issues/5943
+
+Then execute
+
+```
+npm install
+```
+
+
+
 ### Compiles and hot-reloads for development
+Yarn:
+
 ```
-parcel watch ./ClientComponents/bundle.js --out-dir ./wwwroot/dist
-dotnet watch run
+yarn start
 ```
+
+npm:
+
+```
+npm start
+```
+
 
 ### Compiles and minifies for production
+Yarn:
+
 ```
-parcel build ./ClientComponents/bundle.js --out-dir ./wwwroot/dist
-dotnet publish -c Release
+yarn build
 ```
 
+npm:
+
+```
+npm build
+```

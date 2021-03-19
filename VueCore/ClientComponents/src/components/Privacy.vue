@@ -16,5 +16,6 @@ export default {
     .privacy {
         border: 1px solid #090;
         background: rgba(0, 153, 0, 0.25);
+        padding: 1rem;
     }
 </style>
