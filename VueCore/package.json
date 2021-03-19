@@ -4,10 +4,10 @@
   "private": true,
   "scripts": {
     "start": "run-p start:parcel start:dotnet",
-    "start:parcel": "parcel watch ./ClientComponents/bundle.js --out-dir ./wwwroot/",
+    "start:parcel": "parcel watch ./ClientComponents/bundle.js --out-dir ./wwwroot/dist",
     "start:dotnet": "dotnet watch run",
     "build": "run-s build:parcel build:dotnet",
-    "build:parcel": "parcel build ./ClientComponents/bundle.js --out-dir ./wwwroot/",
+    "build:parcel": "parcel build ./ClientComponents/bundle.js --out-dir ./wwwroot/dist",
     "build:dotnet": "dotnet publish -c Release"
   },
   "dependencies": {

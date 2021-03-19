@@ -39,13 +39,13 @@ yarn install
 
 ### Compiles and hot-reloads for development
 ```
-parcel watch ./ClientComponents/bundle.js --out-dir ./wwwroot/
+parcel watch ./ClientComponents/bundle.js --out-dir ./wwwroot/dist
 dotnet watch run
 ```
 
 ### Compiles and minifies for production
 ```
-parcel build ./ClientComponents/bundle.js --out-dir ./wwwroot/
+parcel build ./ClientComponents/bundle.js --out-dir ./wwwroot/dist
 dotnet publish -c Release
 ```
 
