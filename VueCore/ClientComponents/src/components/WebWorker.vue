@@ -16,5 +16,6 @@ export default {
     .ww {
         border: 1px solid #009;
         background: rgba(0, 0, 153, 0.25);
+        padding: 1rem;
     }
 </style>

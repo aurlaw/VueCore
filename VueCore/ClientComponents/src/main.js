@@ -24,11 +24,8 @@ function renderAppInElement(el) {
     const App = APPS[id];
     if (!App) return;
 
-    console.log('mount comp', id);
-  
     // // get props from elements data attribute, like the post_id
     const props = Object.assign({}, el.dataset);
-    console.log('props', props);
   
     new Vue({
         render: h => h(App, {props})

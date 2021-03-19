@@ -3,10 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "clean" : "rm ./wwwroot/dist/*",
     "start": "run-p start:parcel start:dotnet",
     "start:parcel": "parcel watch ./ClientComponents/bundle.js --out-dir ./wwwroot/dist",
     "start:dotnet": "dotnet watch run",
-    "build": "run-s build:parcel build:dotnet",
+    "build": "clean && run-s build:parcel build:dotnet",
     "build:parcel": "parcel build ./ClientComponents/bundle.js --out-dir ./wwwroot/dist",
     "build:dotnet": "dotnet publish -c Release"
   },
@@ -18,7 +19,6 @@
     "@vue/component-compiler-utils": "^3.2.0",
     "eslint": "^7.22.0",
     "npm-run-all": "^4.1.5",
-    "parcel": "1.12.4",
     "parcel-bundler": "^1.12.4",
     "vue-template-compiler": "^2.6.12"
   },
