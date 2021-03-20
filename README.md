@@ -97,10 +97,16 @@ npm build
 
 ## Docker
 
-
 ```
 cd VueCore
 docker build -t aurlaw/vuecore:1.0 .
 docker run -d -p 9090:80 aurlaw/vuecore:1.0
 
+```
+
+## Tagging
+
+```
+git tag v1.0
+git push --tags
 ```
