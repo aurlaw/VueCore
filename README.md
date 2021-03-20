@@ -1,5 +1,7 @@
 # VueCore
 
+[View Demo Site](https://aurlaw-vuecore-gbvki.ondigitalocean.app/)
+
 .NET 5 with Vue components. Uses Parcel for build environment of Vue. 
 
 This is not a SPA, it is a .NET Core MVC app utlizing individual Vue components - see ```VueCore/ClientComponents/src/main.js``` for set up of components. 
