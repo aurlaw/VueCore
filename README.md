@@ -20,6 +20,7 @@ Each component is mounted within an HTML element using the class `__vue-root` an
 * Node 10+
 * Parcel
 * Vue 
+* Docker (optional)
 
 
 ### Installing Parcel
@@ -90,4 +91,14 @@ npm:
 
 ```
 npm build
+```
+
+## Docker
+
+
+```
+cd VueCore
+docker build -t aurlaw/vuecore:1.0 .
+docker run -d -p 9090:80 aurlaw/vuecore:1.0
+
 ```

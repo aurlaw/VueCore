@@ -9,7 +9,7 @@
     "start:dotnet": "dotnet watch run",
     "build": "run-s build:parcel build:dotnet",
     "build:parcel": "parcel build ./ClientComponents/bundle.js --out-dir ./wwwroot/dist",
-    "build:dotnet": "dotnet publish -c Release"
+    "build:dotnet": "dotnet publish -c Release -o out"
   },
   "dependencies": {
     "vue": "^2.6.11",
@@ -23,7 +23,7 @@
     "vue-template-compiler": "^2.6.12"
   },
   "resolutions": {
-    "@babel/preset-env": "^7.18.8"
+    "@babel/preset-env": "^7.13.8"
   },
   "browserslist": [
     "> 1%",
