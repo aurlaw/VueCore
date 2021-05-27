@@ -110,3 +110,5 @@ docker run -d -p 9090:80 aurlaw/vuecore:1.0
 git tag v1.0
 git push --tags
 ```
+
+https://leemartin.dev/how-to-develop-a-countdown-clock-using-vue-and-luxon-for-rockstars-e3ecff9338ef

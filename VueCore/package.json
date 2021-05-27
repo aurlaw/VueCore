@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "clean" : "rm ./wwwroot/dist/*",
+    "clean": "rm ./wwwroot/dist/*",
     "start": "run-p start:parcel start:dotnet",
     "start:parcel": "parcel watch ./ClientComponents/bundle.js --out-dir ./wwwroot/dist",
     "start:dotnet": "dotnet watch run",
@@ -13,7 +13,8 @@
   },
   "dependencies": {
     "vue": "^2.6.11",
-    "vue-hot-reload-api": "^2.3.4"
+    "vue-hot-reload-api": "^2.3.4",
+    "vue2-dropzone": "^3.6.0"
   },
   "devDependencies": {
     "@vue/component-compiler-utils": "^3.2.0",
