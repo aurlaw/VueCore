@@ -1,14 +1,19 @@
 <template>
     <div class="vision">
-          Vision: {{name}}<br>
-            <vue-dropzone ref="dropzone" id="drop1" 
-                :options="dropOptions" 
-                @vdropzone-file-added="onFileAdded"
-                @vdropzone-removed-file="onRemovedFile"
-                @vdropzone-success="onUploadSuccess"></vue-dropzone>
-            <button class="btn btn-primary" @click="processFiles">Process Files</button>
-            <button class="btn btn-danger" @click="removeAllFiles">Remove All Files</button>
-
+        Vision: {{name}}<br>
+          <vue-dropzone ref="dropzone" id="drop1" 
+              :options="dropOptions" 
+              @vdropzone-file-added="onFileAdded"
+              @vdropzone-removed-file="onRemovedFile"
+              @vdropzone-success="onUploadSuccess"></vue-dropzone>
+          <button class="btn btn-primary" @click="processFiles">Process Files</button>
+          <button class="btn btn-danger" @click="removeAllFiles">Remove All Files</button>
+          <hr>
+        <ul class="list">
+          <li v-for="item in processedFiles" :key="item.url">
+            <img v-bind:src="item.url" class="img-fluid" />
+          </li>
+        </ul>          
     </div>
 </template>
 
@@ -35,6 +40,7 @@ export default {
       addRemoveLinks: true      
     },
     files: [],
+    processedFiles:[],
   }),
   components: {
       vueDropzone
@@ -72,6 +78,9 @@ export default {
     onUploadSuccess(file, response) {
     //   console.log(file);
       console.log(response);
+      if(response.result) {
+        this.processedFiles.push(response);
+      }
     },
     onRemovedFile(file, error, xhr) {
         if(file && file.name) {
@@ -81,10 +90,14 @@ export default {
   }  
 }
 </script>
-<style scoped>
+<style  scoped>
     .vision {
         border: 1px solid #080;
         background: rgba(0, 146, 19, 0.25);
         padding: 1rem;
+
+    }
+    .vision  .list {
+      width: 50%;
     }
 </style>

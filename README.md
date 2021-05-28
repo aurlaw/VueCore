@@ -112,3 +112,14 @@ git push --tags
 ```
 
 https://leemartin.dev/how-to-develop-a-countdown-clock-using-vue-and-luxon-for-rockstars-e3ecff9338ef
+
+## Azure User Secrets
+
+vue-core
+
+```
+dotnet user-secrets set "AzureStorage:ConnectionString" "STORAGE CONNECTION STRING"
+dotnet user-secrets set "AzureStorage:Container" "STORAGE CONTAINER NAME"
+dotnet user-secrets set "AzureVision:Endpoint" "VISION ENPOINT"
+dotnet user-secrets set "AzureVision:SubscriptionKey" "VISION SUBSCRIPTION KEY"
+```
