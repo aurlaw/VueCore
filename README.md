@@ -1,6 +1,6 @@
 # VueCore
 
-[View Demo Site](https://aurlaw-vuecore-gbvki.ondigitalocean.app/)
+[View Demo Site](https://vue-core.azurewebsites.net/)
 
 .NET 5 with Vue components. Uses Parcel for build environment of Vue. 
 
