@@ -123,3 +123,6 @@ dotnet user-secrets set "AzureStorage:Container" "STORAGE CONTAINER NAME"
 dotnet user-secrets set "AzureVision:Endpoint" "VISION ENPOINT"
 dotnet user-secrets set "AzureVision:SubscriptionKey" "VISION SUBSCRIPTION KEY"
 ```
+
+TODO:
+https://github.com/Azure-Samples/media-services-v3-dotnet/tree/main/VideoEncoding/Encoding_H264

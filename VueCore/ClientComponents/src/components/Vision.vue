@@ -18,19 +18,19 @@
             </div>
             <section v-if="item.analysis.descriptions.length" class="section">
               <h3>Summary:</h3>
-              <div v-for="(desc, index) in item.analysis.descriptions">
+              <div v-for="(desc, index) in item.analysis.descriptions" :key="setKey('d', index)">
                 {{desc.caption}} <small>({{desc.confidence}})</small>
               </div>
             </section>
             <section v-if="item.analysis.tags.length" class="section">
               <h3>Tags:</h3>                
-              <span v-for="(tag, index) in item.analysis.tags" class="tag">
+              <span v-for="(tag, index) in item.analysis.tags" class="tag" :key="setKey('t', index)">
                 {{tag.caption}} <small>({{tag.confidence}})</small> 
               </span>
             </section>
             <section v-if="item.analysis.categories.length" class="section">
               <h3>Categories:</h3>
-              <div v-for="(tag, index) in item.analysis.categories">
+              <div v-for="(tag, index) in item.analysis.categories" :key="setKey('c', index)">
                 {{tag.name}} <small>({{tag.score}})</small>
               </div>
             </section>
@@ -53,7 +53,7 @@ export default {
   data: () => ({
     dropOptions: {
       url: "/Vision/upload",
-      maxFilesize: 2, // MB
+      maxFilesize: 4, // MB
       maxFiles: 4,
       acceptedFiles: "image/*",
       autoProcessQueue: false,
@@ -117,6 +117,9 @@ export default {
       return {
         'color': color
       }
+    },
+    setKey(prefix, keyId) {
+      return prefix + '_' + keyId;
     }
   }  
 }

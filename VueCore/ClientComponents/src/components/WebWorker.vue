@@ -1,6 +1,6 @@
 <template>
     <div class="ww">
-          Web Workers: {{name}}
+          Web Workers: {{name}} TODO
     </div>
 </template>
 
