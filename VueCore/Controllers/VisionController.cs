@@ -18,11 +18,14 @@ namespace VueCore.Controllers
     {
         private readonly ILogger<VisionController> _logger;
         private readonly IStorageService _storageService;
+        private readonly IVisionService _visionService;
 
-        public VisionController(ILogger<VisionController> logger, IStorageService storageService)
+        public VisionController(ILogger<VisionController> logger, 
+        IStorageService storageService, IVisionService visionService)
         {
             _logger = logger;
             _storageService = storageService;
+            _visionService = visionService;
         }
         public IActionResult Index()
         {
@@ -39,10 +42,15 @@ namespace VueCore.Controllers
                     await file.CopyToAsync(ms, token);
                     ms.Position = 0;
                     var url = await _storageService.SaveDocumentAsync(file.FileName, file.ContentType, ms, token);
-                    return Ok(new { Result = true, Url = url});
+                    VisionAnalysis analysis = null;
+                    if(!string.IsNullOrEmpty(url))
+                    {
+                        analysis = await _visionService.AnalyzeImageUrlAsync(url);
+                    }
+                    return Ok(new { Success = true, Url = url, analysis = analysis});
                 }
             }
-            return Ok(new { Result = false});
+            return Ok(new { Success = false});
         }
 
         [HttpPost]

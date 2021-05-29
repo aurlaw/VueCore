@@ -1,9 +1,10 @@
 using System.Threading.Tasks;
+using VueCore.Models;
 
 namespace VueCore.Services
 {
     public interface IVisionService
     {
-         Task<string> AnalyzeImageUrl(string imageUrl);
+         Task<VisionAnalysis> AnalyzeImageUrlAsync(string imageUrl);
     }
 }

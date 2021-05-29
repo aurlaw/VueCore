@@ -1,6 +1,6 @@
 <template>
     <div class="vision">
-        Vision: {{name}}<br>
+        <h2>Vision: {{name}}</h2>
           <vue-dropzone ref="dropzone" id="drop1" 
               :options="dropOptions" 
               @vdropzone-file-added="onFileAdded"
@@ -9,17 +9,41 @@
           <button class="btn btn-primary" @click="processFiles">Process Files</button>
           <button class="btn btn-danger" @click="removeAllFiles">Remove All Files</button>
           <hr>
-        <ul class="list">
-          <li v-for="item in processedFiles" :key="item.url">
-            <img v-bind:src="item.url" class="img-fluid" />
-          </li>
-        </ul>          
+        <div class="list">
+          <div v-for="item in processedFiles" :key="item.url">
+            <div>
+                <span v-bind:style="setColor(item.analysis.color.accentColor)">Accent: {{item.analysis.color.accentColor}} </span>, 
+                <span v-bind:style="setColor(item.analysis.color.dominantColorBackground)">Background: {{item.analysis.color.dominantColorBackground}} </span>, 
+                <span v-bind:style="setColor(item.analysis.color.dominantColorForeground)">Foreground: {{item.analysis.color.dominantColorForeground}}  </span>
+            </div>
+            <section v-if="item.analysis.descriptions.length" class="section">
+              <h3>Summary:</h3>
+              <div v-for="(desc, index) in item.analysis.descriptions">
+                {{desc.caption}} <small>({{desc.confidence}})</small>
+              </div>
+            </section>
+            <section v-if="item.analysis.tags.length" class="section">
+              <h3>Tags:</h3>                
+              <span v-for="(tag, index) in item.analysis.tags" class="tag">
+                {{tag.caption}} <small>({{tag.confidence}})</small> 
+              </span>
+            </section>
+            <section v-if="item.analysis.categories.length" class="section">
+              <h3>Categories:</h3>
+              <div v-for="(tag, index) in item.analysis.categories">
+                {{tag.name}} <small>({{tag.score}})</small>
+              </div>
+            </section>
+            <vue-picture border-color="#0f0" v-bind:border-width="3" text-color="#fff"
+              v-bind:imgSrc="item.url" 
+              v-bind:detectedObjects="item.analysis.objects" />
+          </div>
+        </div>          
     </div>
 </template>
-
 <script>
 import vueDropzone from "vue2-dropzone";
-
+import vuePicture from './VuePicture';
 
 export default {
   name: 'Vision',
@@ -43,7 +67,8 @@ export default {
     processedFiles:[],
   }),
   components: {
-      vueDropzone
+      vueDropzone,
+      vuePicture
   },
   methods: {
     deleteFromApi() {
@@ -68,6 +93,7 @@ export default {
     removeAllFiles() {
     //   this.deleteFromApi();
       this.$refs.dropzone.removeAllFiles();
+      this.processedFiles = [];
     },
     processFiles() {
       this.$refs.dropzone.processQueue();
@@ -78,7 +104,7 @@ export default {
     onUploadSuccess(file, response) {
     //   console.log(file);
       console.log(response);
-      if(response.result) {
+      if(response.success) {
         this.processedFiles.push(response);
       }
     },
@@ -87,6 +113,11 @@ export default {
            this.files = this.files.filter(f => f !== file.name);            
         }        
     },
+    setColor(color) {
+      return {
+        'color': color
+      }
+    }
   }  
 }
 </script>
@@ -98,6 +129,20 @@ export default {
 
     }
     .vision  .list {
-      width: 50%;
+      width: 80%;
+      background: #fff;
+    }
+    .vision  .section {
+      border: 1px solid #666;
+      box-shadow: 2px 2px 6px 0px #666;
+      margin: 1rem auto;
+      padding: 1rem;
+    }
+    .vision  .section .tag {
+      padding: 2px;
+      font-style: italic;
+      border: 1px solid #333;
+      margin: 0.25rem;
+      display: inline-block;    
     }
 </style>
