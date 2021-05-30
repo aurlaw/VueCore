@@ -5,6 +5,7 @@ const CommentBox = () => import('./components/CommentBox.vue');
 const Privacy = () => import('./components/Privacy.vue');
 const WebWorker = () => import('./components/WebWorker.vue');
 const Vision = () => import('./components/Vision.vue');
+const MediaEncoder = () => import('./components/MediaEncoder.vue');
 
 Vue.config.productionTip = false
 
@@ -13,7 +14,8 @@ const APPS = {
     CommentBox,
     Privacy,
     WebWorker,
-    Vision
+    Vision,
+    MediaEncoder
 };
 
 function renderAppInElement(el) {

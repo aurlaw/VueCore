@@ -23,6 +23,9 @@ Each component is mounted within an HTML element using the class `__vue-root` an
 * Parcel
 * Vue 
 * Docker (optional)
+* Azure Account with 
+  * Storage
+  * Computer Vision
 
 
 ### Installing Parcel

@@ -1,10 +1,12 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <UserSecretsId>6cf3da59-22d1-4d5a-9dc6-405c2589cacc</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Azure.Storage.Blobs" Version="12.8.4" />
-    <PackageReference Include="Microsoft.Azure.CognitiveServices.Vision.ComputerVision" Version="7.0.0" />
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.8.4"/>
+    <PackageReference Include="Microsoft.Azure.CognitiveServices.Vision.ComputerVision" Version="7.0.0"/>
+    <PackageReference Include="MediatR" Version="9.0.0"/>
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0"/>
   </ItemGroup>
 </Project>

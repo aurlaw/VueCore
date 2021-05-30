@@ -2,12 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using VueCore.Hubs;
 using VueCore.Services;
 
 namespace VueCore
@@ -24,10 +26,19 @@ namespace VueCore
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // custom services
             services.AddSingleton<IStorageService, StorageService>();
             services.AddSingleton<IVisionService, VisionService>();
 
+            // routing/controllers
+            services.AddRouting(options => options.LowercaseUrls = true);
             services.AddControllersWithViews();
+
+            // add mediatR
+            services.AddMediatR(typeof(Startup).Assembly);   
+            // add signalR
+            services.AddSignalR(); 
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -55,7 +66,9 @@ namespace VueCore
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapHub<MediaProcessHub>("/mediaprocessHub");
             });
+
         }
     }
 }

@@ -1,6 +1,6 @@
 <template>
     <div class="vision">
-        <h2>Vision: {{name}}</h2>
+        <h2>{{name}}</h2>
           <vue-dropzone ref="dropzone" id="drop1" 
               :options="dropOptions" 
               @vdropzone-file-added="onFileAdded"
@@ -61,7 +61,9 @@ export default {
     //   chunkSize: 500, // Bytes
       thumbnailWidth: 150, // px
       thumbnailHeight: 150,
-      addRemoveLinks: true      
+      addRemoveLinks: true,
+      dictDefaultMessage: "<i class='fa fa-cloud-upload'></i> - Add images only. Max 4. Max file size 4MB"
+      
     },
     files: [],
     processedFiles:[],
