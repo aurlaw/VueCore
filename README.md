@@ -129,3 +129,11 @@ dotnet user-secrets set "AzureVision:SubscriptionKey" "VISION SUBSCRIPTION KEY"
 
 TODO:
 https://github.com/Azure-Samples/media-services-v3-dotnet/tree/main/VideoEncoding/Encoding_H264
+
+Set up Media service and Event Hub
+
+
+### .env
+
+Use [sample.env](VueCore/sample.env) as a template for the .env file to be created. The .env file must be placed at the root of the sample (same location than sample.env).
+Connect to the Azure portal with your browser and go to your media services account / API access to get the .ENV data to store to the .env file.

@@ -10,7 +10,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using VueCore.Hubs;
+using VueCore.Models.Options;
 using VueCore.Services;
+using VueCore.Services.Security;
 
 namespace VueCore
 {
@@ -29,6 +31,9 @@ namespace VueCore
             // custom services
             services.AddSingleton<IStorageService, StorageService>();
             services.AddSingleton<IVisionService, VisionService>();
+            services.AddSingleton<AzureMediaSettings>();
+            services.AddSingleton<MediaAuthentication>();
+            services.AddSingleton<IMediaService, MediaService>();
 
             // routing/controllers
             services.AddRouting(options => options.LowercaseUrls = true);

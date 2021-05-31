@@ -5,6 +5,7 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using VueCore.Services.Commands;
 
 namespace VueCore.Controllers
 {
@@ -29,15 +30,28 @@ namespace VueCore.Controllers
         [RequestSizeLimit(73400320)]
         public async Task<IActionResult> Upload(IFormFile file, CancellationToken token) 
         {
-            if (file.Length > 0)
+            string groupId = string.Empty;
+            if(Request.Headers.ContainsKey("x-vuecore-groupid"))
             {
-                using(var ms = new MemoryStream())
-                {
-                    await file.CopyToAsync(ms, token);
-                    ms.Position = 0;
-                }
+                groupId = Request.Headers["x-vuecore-groupid"].ToString();
+            } 
+            else 
+            {
+                return Unauthorized("x-vuecore-groupid not set");
             }
-            return Ok(new { Success = false});
+            _logger.LogInformation("Create request");
+            var request = new MediaProcessRequest(groupId, file);
+            await _mediatr.Send(request, token);
+
+            // if (file.Length > 0)
+            // {
+            //     using(var ms = new MemoryStream())
+            //     {
+            //         await file.CopyToAsync(ms, token);
+            //         ms.Position = 0;
+            //     }
+            // }
+            return Ok(new { Success = true, groupId});
         }
     }
 }
