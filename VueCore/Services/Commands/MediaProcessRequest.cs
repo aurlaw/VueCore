@@ -5,6 +5,7 @@ namespace VueCore.Services.Commands
 {
     public record MediaProcessRequest(
         string GroupId,
-        IFormFile File
+        IFormFile File,
+        byte[] Data
     ) : IRequest;
 }

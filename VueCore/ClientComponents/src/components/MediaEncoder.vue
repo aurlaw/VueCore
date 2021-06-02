@@ -90,6 +90,11 @@ export default {
         _this.groupId = groupId;
         _this.setMessage(`Retrieved Group Id: ${_this.groupId}`);
       });
+      //
+      this.hubConn.on("SendUploaded", function(fileName) {
+        console.log('SendUploaded', fileName);
+        _this.setMessage(`Uploaded: ${fileName}`);
+      });
       this.hubConn.on("SendReceived", function(fileName) {
         console.log('SendReceived', fileName);
         _this.processedFiles.push(fileName);
@@ -100,7 +105,10 @@ export default {
         _this.processedFiles.push(mediaUrl);
         _this.setMessage(`Processed: ${mediaUrl}`);
       });
-
+      this.hubConn.on("SendError", function(msg) {
+        console.log('SendError', msg);
+        _this.setMessage(`Error: ${msg}`);
+      });
 
       // signalR connection
       console.log('connecting...', this.hubConn);

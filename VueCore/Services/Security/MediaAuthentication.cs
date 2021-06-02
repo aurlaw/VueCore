@@ -4,6 +4,7 @@ using Microsoft.Rest;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using VueCore.Models;
 using VueCore.Models.Options;
 
 namespace VueCore.Services.Security
@@ -86,7 +87,7 @@ namespace VueCore.Services.Security
             {
                 result = await app.AcquireTokenSilent(scopes, accounts.FirstOrDefault()).ExecuteAsync();
             }
-            catch (MsalUiRequiredException ex)
+            catch (MsalUiRequiredException)
             {
                 try
                 {
@@ -94,12 +95,12 @@ namespace VueCore.Services.Security
                 }
                 catch (MsalException maslException)
                 {
-                    Console.Error.WriteLine($"ERROR: MSAL interactive authentication exception with code '{maslException.ErrorCode}' and message '{maslException.Message}'.");
+                    throw new MediaException($"ERROR: MSAL interactive authentication exception with code '{maslException.ErrorCode}' and message '{maslException.Message}'.", maslException);
                 }
             }
             catch (MsalException maslException)
             {
-                Console.Error.WriteLine($"ERROR: MSAL silent authentication exception with code '{maslException.ErrorCode}' and message '{maslException.Message}'.");
+                    throw new MediaException($"ERROR: MSAL silent authentication exception with code '{maslException.ErrorCode}' and message '{maslException.Message}'.", maslException);
             }
 
             return new TokenCredentials(result.AccessToken, TokenType);

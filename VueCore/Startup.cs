@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using dotenv.net;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -12,6 +13,7 @@ using Microsoft.Extensions.Hosting;
 using VueCore.Hubs;
 using VueCore.Models.Options;
 using VueCore.Services;
+using VueCore.Services.Hosted;
 using VueCore.Services.Security;
 
 namespace VueCore
@@ -25,15 +27,23 @@ namespace VueCore
 
         public IConfiguration Configuration { get; }
 
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
             // custom services
+            services.AddHostedService<QueuedHostedService>();
             services.AddSingleton<IStorageService, StorageService>();
             services.AddSingleton<IVisionService, VisionService>();
             services.AddSingleton<AzureMediaSettings>();
             services.AddSingleton<MediaAuthentication>();
             services.AddSingleton<IMediaService, MediaService>();
+            services.AddSingleton<IBackgroundTaskQueue>(ctx => {
+                if(!int.TryParse(Configuration["QueueCapacity"], out var queueCapacity))
+                    queueCapacity = 100;
+                return new BackgroundTaskQueue(queueCapacity);
+            });
 
             // routing/controllers
             services.AddRouting(options => options.LowercaseUrls = true);

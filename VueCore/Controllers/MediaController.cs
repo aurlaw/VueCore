@@ -39,19 +39,20 @@ namespace VueCore.Controllers
             {
                 return Unauthorized("x-vuecore-groupid not set");
             }
-            _logger.LogInformation("Create request");
-            var request = new MediaProcessRequest(groupId, file);
-            await _mediatr.Send(request, token);
 
-            // if (file.Length > 0)
-            // {
-            //     using(var ms = new MemoryStream())
-            //     {
-            //         await file.CopyToAsync(ms, token);
-            //         ms.Position = 0;
-            //     }
-            // }
-            return Ok(new { Success = true, groupId});
+            if (file.Length > 0)
+            {
+                _logger.LogInformation("Create request");
+                using(var ms = new MemoryStream())
+                {
+                    await file.CopyToAsync(ms, token);
+                    ms.Position = 0;
+                    var request = new MediaProcessRequest(groupId, file, ms.ToArray());
+                    await _mediatr.Send(request, token);
+                    return Ok(new { Success = true, groupId});
+                }
+            }
+            return Ok(new {Success = false});
         }
     }
 }

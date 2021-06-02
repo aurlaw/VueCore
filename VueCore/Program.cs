@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using dotenv.net;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -13,6 +14,8 @@ namespace VueCore
     {
         public static void Main(string[] args)
         {
+            // load .env
+            DotEnv.Load();
             CreateHostBuilder(args).Build().Run();
         }
 
