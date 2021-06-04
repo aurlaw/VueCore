@@ -93,17 +93,16 @@ export default {
       //
       this.hubConn.on("SendUploaded", function(fileName) {
         console.log('SendUploaded', fileName);
-        _this.setMessage(`Uploaded: ${fileName}`);
+        _this.setMessage(`Uploading...: ${fileName}`);
       });
-      this.hubConn.on("SendReceived", function(fileName) {
-        console.log('SendReceived', fileName);
-        _this.processedFiles.push(fileName);
-        _this.setMessage(`Received: ${fileName}`);
+      this.hubConn.on("SendReceived", function(mediaJob) {
+        console.log('SendReceived', mediaJob);
+        _this.processedFiles.push(mediaJob.streamUrl);
+        _this.setMessage(`Received: ${mediaJob.streamUrl}`);
       });
-      this.hubConn.on("SendProcessed", function(mediaUrl) {
-        console.log('SendProcessed', mediaUrl);
-        _this.processedFiles.push(mediaUrl);
-        _this.setMessage(`Processed: ${mediaUrl}`);
+      this.hubConn.on("SendProgress", function(message) {
+        console.log('SendProcessed', message);
+        _this.setMessage(`Progress: ${message}`);
       });
       this.hubConn.on("SendError", function(msg) {
         console.log('SendError', msg);
