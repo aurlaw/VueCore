@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using VueCore.Models.Options;
 using VueCore.Services.Security;
 using VueCore.Models;
+using System.Collections.Generic;
 
 namespace VueCore.Services
 {
@@ -36,10 +37,17 @@ namespace VueCore.Services
         }
 
 
-        /*
-                private const string InputMP4FileName = @"ignite.mp4";
+        public async Task PruneAsync(string jobName, string inputAssetName, string outputAssetName, string streamingLocatorName,
+            bool stopEndpoint)
+        {
 
-        */
+            _logger.LogInformation($"PruneAsync: {jobName}");
+            IAzureMediaServicesClient client = await GetClient();
+
+            await CleanUpAsync(client, _settings.ResourceGroup, _settings.AccountName, CustomTransform, jobName, inputAssetName, outputAssetName, 
+                streamingLocatorName, stopEndpoint, DefaultStreamingEndpointName);
+        }
+
         public async Task<Tuple<bool, MediaJob, MediaException>>  EncodeMediaAsync(string assetName, byte[] assetData, Action<string> progess, CancellationToken token)
         {
             
@@ -96,13 +104,31 @@ namespace VueCore.Services
                 {
                     _logger.LogInformation($"Job finished: {elapsed}");
                     progess($"Job finished: {elapsed}");
-                    var downloadFolder = Path.Combine(_environment.WebRootPath, OutputFolder);
-                    await DownloadResults(client, _settings.ResourceGroup, _settings.AccountName, outputAsset.Name, downloadFolder, progess, token);
+                    var thumbnailList = await DownloadResults(client, _settings.ResourceGroup, _settings.AccountName, outputAsset.Name, OutputFolder,  progess, token);
 
-                    //TODO: Streaming
+                    //Streaming
+                    progess("Creating Stream endpoints...");
+                    var locator = await CreateStreamingLocatorAsync(client, _settings.ResourceGroup, _settings.AccountName, outputAssetName, locatorName, token);
+                    var streamingEndpoint = await client.StreamingEndpoints.GetAsync(_settings.ResourceGroup, _settings.AccountName, DefaultStreamingEndpointName, token);
+                    if(streamingEndpoint != null)
+                    {
+                        if(streamingEndpoint.ResourceState != StreamingEndpointResourceState.Running)
+                        {
+                            _logger.LogInformation("Streaming Endpoint was Stopped, restarting now..");
+                            progess("Streaming Endpoint was Stopped, restarting now..");
+                            await client.StreamingEndpoints.StartAsync(_settings.ResourceGroup, _settings.AccountName, DefaultStreamingEndpointName, token);
+                            // Since we started the endpoint, we should stop it in cleanup.
+                            stopEndpoint = true;
+                        }
+                    }    
+                    _logger.LogInformation("Getting the Streaming manifest URLs for HLS and DASH:");
+                    progess("Getting the Streaming manifest URLs for HLS and DASH:");
+                    var streamUrls = await GetStreamingUrlsAsync(client, _settings.ResourceGroup, _settings.AccountName, locator.Name, streamingEndpoint, token);
+                    _logger.LogInformation($"Retuning {streamUrls.Count} URLs");
+
                     isSuccess = true;
                     result = new MediaJob(jobName, locatorName, inputAssetName, outputAssetName, 
-                        stopEndpoint, client.BaseUri.AbsoluteUri);
+                        stopEndpoint, streamUrls, thumbnailList.FirstOrDefault());
                 }
                 else if (job.State == JobState.Error)
                 {
@@ -471,9 +497,10 @@ namespace VueCore.Services
         /// <param name="outputFolderName">The name of the folder into which to download the results.</param>
         /// <param name="token">The CancellationToken.</param>
         /// <returns></returns>
-        private async Task DownloadResults(IAzureMediaServicesClient client, string resourceGroupName, string accountName,
+        private async Task<IList<string>> DownloadResults(IAzureMediaServicesClient client, string resourceGroupName, string accountName,
             string assetName, string outputFolderName, Action<string> progess, CancellationToken token)
         {
+            var list = new List<string>();
             // Use Media Service and Storage APIs to download the output files to a local folder
             AssetContainerSas assetContainerSas = client.Assets.ListContainerSas(
                             resourceGroupName,
@@ -486,11 +513,13 @@ namespace VueCore.Services
             Uri containerSasUrl = new(assetContainerSas.AssetContainerSasUrls.FirstOrDefault());
             BlobContainerClient container = new(containerSasUrl);
 
-            string directory = Path.Combine(outputFolderName, assetName);
-            Directory.CreateDirectory(directory);
+            var downloadFolder = Path.Combine(_environment.WebRootPath, outputFolderName);
 
+            string directory = Path.Combine(downloadFolder, assetName);
+            Directory.CreateDirectory(directory);
+            string urlPrefix = directory.Replace(_environment.WebRootPath, string.Empty).Replace(@"\", "/"); 
             _logger.LogInformation($"Downloading results to {directory}.");
-            progess($"Downloading results to {directory}.");
+            progess("Downloading results..");
 
             string continuationToken = null;
 
@@ -508,8 +537,13 @@ namespace VueCore.Services
 
                         var blobClient = container.GetBlobClient(blobItem.Name);
                         string filename = Path.Combine(directory, blobItem.Name);
-                        progess($"Downloading file: {filename}.");
+                        var url = Path.Combine(urlPrefix, blobItem.Name);
+                        progess($"Downloading file {blobClient.Uri.AbsoluteUri} to : {url}.");
                         await blobClient.DownloadToAsync(filename);
+                        if(Path.GetExtension(filename) == ".png")
+                        {
+                            list.Add(blobClient.Uri.AbsoluteUri);
+                        }
                     }
 
                     // Get the continuation token and loop until it is empty.
@@ -519,7 +553,86 @@ namespace VueCore.Services
             } while (continuationToken != "");
 
             _logger.LogInformation("Download complete.");
+            return list;
         }
+
+        /// <summary>
+        /// Creates a StreamingLocator for the specified asset and with the specified streaming policy name.
+        /// Once the StreamingLocator is created the output asset is available to clients for playback.
+        /// </summary>
+        /// <param name="client">The Media Services client.</param>
+        /// <param name="resourceGroupName">The name of the resource group within the Azure subscription.</param>
+        /// <param name="accountName"> The Media Services account name.</param>
+        /// <param name="assetName">The name of the output asset.</param>
+        /// <param name="locatorName">The StreamingLocator name (unique in this case).</param>
+        /// <param name="token">The CancellationToken.</param>
+        /// <returns></returns>
+        private async Task<StreamingLocator> CreateStreamingLocatorAsync(
+            IAzureMediaServicesClient client,
+            string resourceGroup,
+            string accountName,
+            string assetName,
+            string locatorName,
+            CancellationToken token)
+        {
+            StreamingLocator locator = await client.StreamingLocators.CreateAsync(
+                resourceGroup,
+                accountName,
+                locatorName,
+                new StreamingLocator
+                {
+                    AssetName = assetName,
+                    StreamingPolicyName = PredefinedStreamingPolicy.ClearStreamingOnly
+                },
+                token);
+
+            return locator;
+        }
+
+        /// <summary>
+        /// Checks if the streaming endpoint is in the running state,
+        /// if not, starts it.
+        /// Then, builds the streaming URLs.
+        /// </summary>
+        /// <param name="client">The Media Services client.</param>
+        /// <param name="resourceGroupName">The name of the resource group within the Azure subscription.</param>
+        /// <param name="accountName"> The Media Services account name.</param>
+        /// <param name="locatorName">The name of the StreamingLocator that was created.</param>
+        /// <param name="streamingEndpoint">The streaming endpoint.</param>
+        /// <param name="token">The CancellationToken.</param>
+        /// <returns></returns>
+        private async Task<IList<string>> GetStreamingUrlsAsync(
+            IAzureMediaServicesClient client,
+            string resourceGroupName,
+            string accountName,
+            String locatorName,
+            StreamingEndpoint streamingEndpoint,
+            CancellationToken token)
+        {
+            IList<string> streamingUrls = new List<string>();
+
+            ListPathsResponse paths = await client.StreamingLocators.ListPathsAsync(resourceGroupName, accountName, locatorName, token);
+
+            foreach (StreamingPath path in paths.StreamingPaths)
+            {
+                _logger.LogInformation($"The following formats are available for {path.StreamingProtocol.ToString().ToUpper()}:");
+                foreach (string streamingFormatPath in path.Paths)
+                {
+                    UriBuilder uriBuilder = new()
+                    {
+                        Scheme = "https",
+                        Host = streamingEndpoint.HostName,
+
+                        Path = streamingFormatPath
+                    };
+                    _logger.LogInformation($"\t{uriBuilder}");
+                    streamingUrls.Add(uriBuilder.ToString());
+                }
+            }
+
+            return streamingUrls;
+        }
+
 
         /// <summary>
         /// Delete the job and assets and streaming locator that were created.

@@ -8,5 +8,8 @@ namespace VueCore.Services
     public interface IMediaService
     {
          Task<Tuple<bool, MediaJob, MediaException>> EncodeMediaAsync(string assetName, byte[] assetData, Action<string> progess, CancellationToken token);
+
+         Task PruneAsync(string jobName, string inputAssetName, string outputAssetName, string streamingLocatorName,
+            bool stopEndpoint);
     }
 }

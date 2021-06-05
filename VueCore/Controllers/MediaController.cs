@@ -5,6 +5,7 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using VueCore.Models;
 using VueCore.Services.Commands;
 
 namespace VueCore.Controllers
@@ -26,8 +27,8 @@ namespace VueCore.Controllers
         }
 
         [HttpPost]
-        [RequestFormLimits(MultipartBodyLengthLimit = 73400320)]
-        [RequestSizeLimit(73400320)]
+        [RequestFormLimits(MultipartBodyLengthLimit = 150000000)]
+        [RequestSizeLimit(150000000)]
         public async Task<IActionResult> Upload(IFormFile file, CancellationToken token) 
         {
             string groupId = string.Empty;
@@ -54,5 +55,17 @@ namespace VueCore.Controllers
             }
             return Ok(new {Success = false});
         }
+ 
+         [HttpPost]
+        public async Task<IActionResult> RemoveMedia([FromBody]MediaJob mediaJob, CancellationToken token) 
+        {
+            if(mediaJob == null)
+            {
+                return Ok(new {Success = false});
+            }
+            await _mediatr.Send(new MediaPruneRequest(mediaJob), token);
+            return Ok(new {Success = true});
+        }
+
     }
 }

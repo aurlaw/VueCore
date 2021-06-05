@@ -1,15 +1,18 @@
+using System.Collections.Generic;
+
 namespace VueCore.Models
 {
     public class MediaJob
     {
-        public MediaJob(string jobName, string locatorName, string inputAssetName, string outputAssetName, bool stopEndpoint, string streamUrl)
+        public MediaJob(string jobName, string locatorName, string inputAssetName, string outputAssetName, bool stopEndpoint, IList<string> streamUrlList, string thumbnail)
         {
             JobName = jobName;
             LocatorName = locatorName;
             InputAssetName = inputAssetName;
             OutputAssetName = outputAssetName;
             StopEndpoint = stopEndpoint;
-            StreamUrl = streamUrl;
+            StreamUrlList = streamUrlList;
+            Thumbnail = thumbnail;
         }
 
         public string JobName {get;set;}
@@ -17,7 +20,8 @@ namespace VueCore.Models
         public string  InputAssetName  {get;set;}
         public string  OutputAssetName  {get;set;}
         public bool StopEndpoint  {get;set;}   
-        public string StreamUrl {get;set;}
+        public string Thumbnail {get;set;}
+        public IList<string> StreamUrlList {get;set;}
 
         
     }
