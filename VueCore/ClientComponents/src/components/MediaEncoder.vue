@@ -23,26 +23,24 @@
         <div class="col video-comp">
           <section class="video-info" v-for="item in processedData" :key="item.jobName">
             <ul>
-              <li>Job: {{item.jobName}}</li>
-              <li>Input Asset: {{item.inputAssetName}}</li>
-              <li>Output Asset: {{item.outputAssetName}}</li>
-              <li>Locator Name: {{item.locatorName}}</li>
-              <li>Stop Endpoint?: {{item.stopEndpoint}}</li>
-              <li>Thumbnail: {{item.thumbnail}}</li>
+              <li><strong>Job:</strong> {{item.jobName}}</li>
+              <li><strong>Input Asset:</strong> {{item.inputAssetName}}</li>
+              <li><strong>Output Asset:</strong> {{item.outputAssetName}}</li>
               <li>
-                  Stream Urls: 
-                <ul>
+                  <strong>Stream Urls:</strong>
+                <ul class="small">
                   <li v-for="(url, index) in item.streamUrlList" :key="index">
                     {{url}}
                   </li>
                 </ul>
+                <small>HLS URL: {{getHLSUrl(item.streamUrlList)}}</small>
               </li>
             </ul>
             <div class="player">
-              <img v-bind:src="item.thumbnail" v-bind:alt="item.outputAssetName" class="img-fluid" />
+              <!-- <img v-bind:src="item.thumbnail" v-bind:alt="item.outputAssetName" class="img-fluid" /> -->
+              <vue-video v-bind:hlsSrc="getHLSUrl(item.streamUrlList)" />
             </div>
               <button class="btn btn-danger" @click="onDeleteMedia(item)">Delete</button>
-
           </section>
         </div>
     </div>
@@ -51,8 +49,8 @@
 <script>
 import vueDropzone from "vue2-dropzone";
 import {HubConnectionBuilder} from "@microsoft/signalr";
-
-
+import {saveObject, removeKey, getObject} from "../utilites/storage";
+import VueVideo from "./VueVideo";
 
 export default {
   name: 'MediaEncoder',
@@ -62,7 +60,7 @@ export default {
   data: () => ({
     dropOptions: {
         url: "/media/upload",
-        maxFilesize: 70, // MB
+        maxFilesize: 150, // MB
         maxFiles: 1,
         acceptedFiles: "video/*",
         autoProcessQueue: false,
@@ -81,10 +79,12 @@ export default {
     groupId: '',
   }),
   components: {
-      vueDropzone
+      vueDropzone,
+      VueVideo
   },
   methods: {
     deleteMedia(mediaJob) {
+        var _this = this;
         var headers = new Headers();
         headers.append("Content-Type", "application/json");
 
@@ -99,10 +99,7 @@ export default {
         fetch('/media/removeMedia', requestOptions)
         .then(function(d) {
           console.log(d);
-          if(d.success)
-          {
-            this.processedData = this.processedData.filter(f => f.jobName !== mediaJob.jobName);            
-          }
+            _this.processedDataRemove(mediaJob);
         });
     },    
     configureHub() {
@@ -149,7 +146,7 @@ export default {
       });
       this.hubConn.on("SendReceived", function(mediaJob) {
         console.log('SendReceived', mediaJob);
-        _this.processedData.push(mediaJob);
+        _this.processedDataAdd(mediaJob);
         _this.setMessage('Received media info');
       });
       this.hubConn.on("SendProgress", function(message) {
@@ -186,10 +183,17 @@ export default {
             return console.error('GenerateGroupId', err.toString());
         });
     },
+    getHLSUrl(streamingUrlList) {
+      const hlsType = 'format=m3u8-aapl';
+      if(streamingUrlList.length) {
+          return streamingUrlList.find(url => url.includes(hlsType));
+      }
+
+    },
     removeAllFiles() {
     //   this.deleteFromApi();
       this.$refs.dropzone.removeAllFiles();
-      this.processedData = [];
+      this.processedDataPrune();
     },
     processFiles() {
       const headers =  { "x-vuecore-groupid": this.groupId };
@@ -218,10 +222,31 @@ export default {
         this.deleteMedia(mediaJob);
       }
     },
+    processedDataAdd(mediaJob) {
+      this.processedData.push(mediaJob);
+      saveObject('mediaJobArr', this.processedData);
+    },
+    processedDataRemove(mediaJob) {
+      console.log('processedDataRemove', mediaJob);
+      this.processedData = this.processedData.filter(f => f.jobName !== mediaJob.jobName);            
+      saveObject('mediaJobArr', this.processedData);
+    },
+    processedDataPrune() {
+      this.processedData = [];
+      removeKey('mediaJobArr');
+    },
+    processedDataLoad() {
+      const data = getObject('mediaJobArr');
+      console.log('processedDataLoad', data);
+      if(data != null && Array.isArray(data)) {
+        this.processedData = data;
+      }
+    }
   },
   mounted() {
     this.setHubStatus('Mounted...');
     this.configureHub();
+    this.processedDataLoad();
   }  
 }
 
@@ -246,6 +271,9 @@ export default {
       background: #fff;
       border: 1px solid #ccc;
       margin: 1rem auto;
+    }
+    .video-info ul {
+      list-style: none;
     }
     /* .video-info .player {
       width: 40%;

@@ -19,7 +19,8 @@ namespace VueCore.Services
     {
 
         private const string OutputFolder = @"MediaOutput";
-        private const string CustomTransform = "Custom_H264_3Layer";
+        // private const string CustomTransform = "Custom_H264_3Layer";
+        private const string DefaultTransform = "H624Multi720p";
         private const string DefaultStreamingEndpointName = "default";   // Change this to your Endpoint name.
 
         private readonly ILogger<MediaService> _logger;
@@ -44,7 +45,7 @@ namespace VueCore.Services
             _logger.LogInformation($"PruneAsync: {jobName}");
             IAzureMediaServicesClient client = await GetClient();
 
-            await CleanUpAsync(client, _settings.ResourceGroup, _settings.AccountName, CustomTransform, jobName, inputAssetName, outputAssetName, 
+            await CleanUpAsync(client, _settings.ResourceGroup, _settings.AccountName, DefaultTransform, jobName, inputAssetName, outputAssetName, 
                 streamingLocatorName, stopEndpoint, DefaultStreamingEndpointName);
         }
 
@@ -72,7 +73,8 @@ namespace VueCore.Services
             {
                 // Ensure that you have customized encoding Transform.  This is really a one time setup operation.
                 progess("Creating Transform...");
-                var transform = await CreateCustomTransform(client, _settings.ResourceGroup, _settings.AccountName, CustomTransform);
+                // var transform = await CreateCustomTransform(client, _settings.ResourceGroup, _settings.AccountName, CustomTransform);
+                var transform = await CreateBuiltinTransform(client, _settings.ResourceGroup, _settings.AccountName, DefaultTransform);
                 _logger.LogInformation($"Transform created...{transform.Description}");
 
                 // Create a new input Asset and upload the specified local video file into it.
@@ -88,7 +90,7 @@ namespace VueCore.Services
 
                 // create job
                 progess("Creating and Submitting Job...");
-                var job = await SubmitJobAsync(client, _settings.ResourceGroup, _settings.AccountName, CustomTransform, jobName, inputAsset.Name, outputAsset.Name, token);                
+                var job = await SubmitJobAsync(client, _settings.ResourceGroup, _settings.AccountName, DefaultTransform, jobName, inputAsset.Name, outputAsset.Name, token);                
                 _logger.LogInformation($"Job created...{job.Name}");
 
                  DateTime startedTime = DateTime.Now;
@@ -98,7 +100,7 @@ namespace VueCore.Services
                 // Overuse of this API may trigger throttling. Developers should instead use Event Grid and listen for the status events on the jobs
                 _logger.LogInformation("Polling job status...");
                 progess("Polling job status...");
-                job = await WaitForJobToFinishAsync(client, _settings.ResourceGroup, _settings.AccountName, CustomTransform, jobName, progess, token);                 
+                job = await WaitForJobToFinishAsync(client, _settings.ResourceGroup, _settings.AccountName, DefaultTransform, jobName, progess, token);                 
                 TimeSpan elapsed = DateTime.Now - startedTime;     
                 if (job.State == JobState.Finished)
                 {
@@ -136,7 +138,7 @@ namespace VueCore.Services
                     _logger.LogInformation($"ERROR: error details: {job.Outputs[0].Error.Details[0].Message}");
                     exception =  new MediaException(job.Outputs[0].Error.Message);
                     _logger.LogInformation("Cleaning up...");
-                    await CleanUpAsync(client, _settings.ResourceGroup, _settings.AccountName, CustomTransform, jobName, 
+                    await CleanUpAsync(client, _settings.ResourceGroup, _settings.AccountName, DefaultTransform, jobName, 
                         inputAssetName, outputAssetName, locatorName, stopEndpoint, DefaultStreamingEndpointName);
 
                 }
@@ -146,7 +148,7 @@ namespace VueCore.Services
                 _logger.LogError(e, e.Message);
                 exception =  new MediaException(e.Message, e);
                 _logger.LogInformation("Cleaning up...");
-                await CleanUpAsync(client, _settings.ResourceGroup, _settings.AccountName, CustomTransform, jobName, 
+                await CleanUpAsync(client, _settings.ResourceGroup, _settings.AccountName, DefaultTransform, jobName, 
                     inputAssetName, outputAssetName, locatorName, stopEndpoint, DefaultStreamingEndpointName);
 
             }
@@ -166,7 +168,6 @@ namespace VueCore.Services
             client.LongRunningOperationRetryTimeout = 2;
             return client;
         }
-
 
         /// <summary>
         /// If the specified transform exists, return that transform. If the it does not
@@ -192,6 +193,7 @@ namespace VueCore.Services
                 {
                     // Create a new TransformOutput with a custom Standard Encoder Preset
                     // This demonstrates how to create custom codec and layer output settings
+                    
 
                   new TransformOutput(
                         new StandardEncoderPreset(
@@ -272,6 +274,42 @@ namespace VueCore.Services
             return transform;
         }
 
+        /// <summary>
+        /// If the specified transform exists, return that transform. If the it does not
+        /// exist, creates a new transform with the specified output. In this case, the
+        /// output is set to encode a video using a custom preset.
+        /// </summary>
+        /// <param name="client">The Media Services client.</param>
+        /// <param name="resourceGroupName">The name of the resource group within the Azure subscription.</param>
+        /// <param name="accountName"> The Media Services account name.</param>
+        /// <param name="transformName">The transform name.</param>
+        /// <returns></returns>
+        private async Task<Transform> CreateBuiltinTransform(IAzureMediaServicesClient client, string resourceGroupName, string accountName, string transformName)
+        {
+            // Does a transform already exist with the desired name? Assume that an existing Transform with the desired name
+            // also uses the same recipe or Preset for processing content.
+            Transform transform = client.Transforms.Get(resourceGroupName, accountName, transformName);
+
+            if (transform == null)
+            {
+                _logger.LogInformation("Creating a built in h264 mulitibitrate 720 transform...");
+                // Create a new Transform Outputs array - this defines the set of outputs for the Transform
+                TransformOutput[] outputs = new TransformOutput[]
+                {
+                  new TransformOutput(
+                        new BuiltInStandardEncoderPreset(EncoderNamedPreset.H264MultipleBitrate720p),
+                        onError: OnErrorType.StopProcessingJob,
+                        relativePriority: Priority.Normal
+                    )
+                };
+
+                string description = "Azure Standard h264 mulitibitrate 720p ";
+                // Create the custom Transform with the outputs defined above
+                transform = await client.Transforms.CreateOrUpdateAsync(resourceGroupName, accountName, transformName, outputs, description);
+            }
+
+            return transform;
+        }
 
         /// <summary>
         /// Creates a new input Asset and uploads the specified local video file into it.
@@ -540,7 +578,7 @@ namespace VueCore.Services
                         var url = Path.Combine(urlPrefix, blobItem.Name);
                         progess($"Downloading file {blobClient.Uri.AbsoluteUri} to : {url}.");
                         await blobClient.DownloadToAsync(filename);
-                        if(Path.GetExtension(filename) == ".png")
+                        if(Path.GetExtension(filename) == ".png" || Path.GetExtension(filename) == ".jpg")
                         {
                             list.Add(blobClient.Uri.AbsoluteUri);
                         }
