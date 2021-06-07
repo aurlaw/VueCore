@@ -32,6 +32,7 @@ namespace VueCore.Controllers
         public async Task<IActionResult> Upload(IFormFile file, CancellationToken token) 
         {
             string groupId = string.Empty;
+            string title = string.Empty;
             if(Request.Headers.ContainsKey("x-vuecore-groupid"))
             {
                 groupId = Request.Headers["x-vuecore-groupid"].ToString();
@@ -39,6 +40,14 @@ namespace VueCore.Controllers
             else 
             {
                 return Unauthorized("x-vuecore-groupid not set");
+            }
+            if(Request.Headers.ContainsKey("x-vuecore-title"))
+            {
+                title = Request.Headers["x-vuecore-title"].ToString();
+            } 
+            else 
+            {
+                return Unauthorized("x-vuecore-title not set");
             }
 
             if (file.Length > 0)
@@ -48,7 +57,7 @@ namespace VueCore.Controllers
                 {
                     await file.CopyToAsync(ms, token);
                     ms.Position = 0;
-                    var request = new MediaProcessRequest(groupId, file, ms.ToArray());
+                    var request = new MediaProcessRequest(groupId, title, file, ms.ToArray());
                     await _mediatr.Send(request, token);
                     return Ok(new { Success = true, groupId});
                 }

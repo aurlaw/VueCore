@@ -3,6 +3,7 @@
     <div class="row">
         <div class="col media-comp">
             <h2>{{name}}</h2>
+            <input type="text" v-model="title" class="form-control" placeholder="Enter Title" required/>
               <vue-dropzone ref="dropzone" id="drop1" 
                   :options="dropOptions" 
                   @vdropzone-file-added="onFileAdded"
@@ -21,6 +22,29 @@
           </section>
         </div>
         <div class="col video-comp">
+         <div class="row row-cols-1" id="video-player">
+           <div class="col">
+             <div v-if="activeMediaJob != null">
+               <h3>{{activeMediaJob.title}}</h3>
+               VIDEO PLAYER TODO
+             </div>
+           </div>
+         </div>   
+          <div class="row row-cols-1 row-cols-md-2">
+            <div class="col mb-4" v-for="item in processedData" :key="item.jobName">
+              <div class="card h-100">
+                <img v-bind:src="item.thumbnail" v-bind:alt="item.outputAssetName" class="card-img-top">
+                <div class="card-body">
+                  <h5 class="card-title">{{item.title}}</h5>
+                  <p class="card-text"><strong>Job:</strong> {{item.jobName}}<br>
+                  <strong>Input Asset:</strong> {{item.inputAssetName}}<br>
+                  <strong>Output Asset:</strong> {{item.outputAssetName}}</p>
+                  <button class="btn btn-primary" type="button" @click="launchVideo(item)">Launch Video</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <section class="video-info" v-for="item in processedData" :key="item.jobName">
             <ul>
               <li><strong>Job:</strong> {{item.jobName}}</li>
@@ -71,12 +95,14 @@ export default {
         addRemoveLinks: true,
         dictDefaultMessage: "<i class='fa fa-cloud-upload'></i> - Add video only. Max file size 70MB"                
     },    
+    title: '',
     files: [],
     processedData: [],
     hubStatus: '',
     message: '',
     hubConn: {},
     groupId: '',
+    activeMediaJob: null
   }),
   components: {
       vueDropzone,
@@ -147,6 +173,8 @@ export default {
       this.hubConn.on("SendReceived", function(mediaJob) {
         console.log('SendReceived', mediaJob);
         _this.processedDataAdd(mediaJob);
+        _this.removeAllFiles();
+        _this.title = '';
         _this.setMessage('Received media info');
       });
       this.hubConn.on("SendProgress", function(message) {
@@ -188,15 +216,21 @@ export default {
       if(streamingUrlList.length) {
           return streamingUrlList.find(url => url.includes(hlsType));
       }
-
+    },
+    launchVideo(mediaJob) {
+      console.log('launchVideo', mediaJob);
+      this.activeMediaJob = mediaJob;
+      document.getElementById('video-player').scrollIntoView();
+      //
     },
     removeAllFiles() {
     //   this.deleteFromApi();
       this.$refs.dropzone.removeAllFiles();
-      this.processedDataPrune();
+      this.files = [];
+      // this.processedDataPrune();
     },
     processFiles() {
-      const headers =  { "x-vuecore-groupid": this.groupId };
+      const headers =  { "x-vuecore-groupid": this.groupId, "x-vuecore-title": this.title };
       this.$refs.dropzone.setOption("headers", headers);
 
       this.$refs.dropzone.processQueue();

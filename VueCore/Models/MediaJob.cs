@@ -4,7 +4,7 @@ namespace VueCore.Models
 {
     public class MediaJob
     {
-        public MediaJob(string jobName, string locatorName, string inputAssetName, string outputAssetName, bool stopEndpoint, IList<string> streamUrlList, string thumbnail)
+        public MediaJob(string jobName, string locatorName, string inputAssetName, string outputAssetName, bool stopEndpoint, IList<string> streamUrlList, string thumbnail, string title)
         {
             JobName = jobName;
             LocatorName = locatorName;
@@ -13,8 +13,9 @@ namespace VueCore.Models
             StopEndpoint = stopEndpoint;
             StreamUrlList = streamUrlList;
             Thumbnail = thumbnail;
+            Title = title;
         }
-
+        public string Title {get;set;}
         public string JobName {get;set;}
         public string LocatorName  {get;set;}
         public string  InputAssetName  {get;set;}

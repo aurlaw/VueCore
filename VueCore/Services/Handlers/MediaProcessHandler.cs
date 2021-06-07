@@ -46,10 +46,10 @@ namespace VueCore.Services.Handlers
         private async ValueTask SubmitMedia(MediaProcessRequest request, CancellationToken cancellationToken) 
         {
             _logger.LogInformation($"SubmitMedia:  file {request.File?.FileName}");
-            var result = await _mediaService.EncodeMediaAsync(request.File.FileName, request.Data, async(msg) => 
+            var result = await _mediaService.EncodeMediaAsync(request.Title, request.File.FileName, request.Data, async(msg) => 
             {
                 await _hubClient.Clients.Groups(request.GroupId).SendProgress(msg);
-            } ,cancellationToken);
+            } , true, cancellationToken);
             if(result.Item1) 
             {
                 await _hubClient.Clients.Groups(request.GroupId).SendReceived(result.Item2);

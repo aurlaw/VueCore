@@ -49,7 +49,13 @@ namespace VueCore.Services
                 streamingLocatorName, stopEndpoint, DefaultStreamingEndpointName);
         }
 
-        public async Task<Tuple<bool, MediaJob, MediaException>>  EncodeMediaAsync(string assetName, byte[] assetData, Action<string> progess, CancellationToken token)
+        public async Task<Tuple<bool, MediaJob, MediaException>>  EncodeMediaAsync(
+            string title,
+            string assetName, 
+            byte[] assetData, 
+            Action<string> progess, 
+            bool downloadAssets,
+            CancellationToken token)
         {
             
             _logger.LogInformation($"EncodeMediaAsync: {assetName} with file: {assetData.Length}");
@@ -106,7 +112,7 @@ namespace VueCore.Services
                 {
                     _logger.LogInformation($"Job finished: {elapsed}");
                     progess($"Job finished: {elapsed}");
-                    var thumbnailList = await DownloadResults(client, _settings.ResourceGroup, _settings.AccountName, outputAsset.Name, OutputFolder,  progess, token);
+                    var thumbnailList = await GenerateResults(client, _settings.ResourceGroup, _settings.AccountName, outputAsset.Name, OutputFolder,  progess, downloadAssets, token);
 
                     //Streaming
                     progess("Creating Stream endpoints...");
@@ -130,7 +136,7 @@ namespace VueCore.Services
 
                     isSuccess = true;
                     result = new MediaJob(jobName, locatorName, inputAssetName, outputAssetName, 
-                        stopEndpoint, streamUrls, thumbnailList.FirstOrDefault());
+                        stopEndpoint, streamUrls, thumbnailList.FirstOrDefault(), title);
                 }
                 else if (job.State == JobState.Error)
                 {
@@ -533,10 +539,19 @@ namespace VueCore.Services
         /// <param name="accountName"> The Media Services account name.</param>
         /// <param name="assetName">The output asset.</param>
         /// <param name="outputFolderName">The name of the folder into which to download the results.</param>
+        /// <param name="progess">Action for call back.</param>
+        /// <param name="downloadAssets">Boolean whether to persist assets to disk.</param>
         /// <param name="token">The CancellationToken.</param>
         /// <returns></returns>
-        private async Task<IList<string>> DownloadResults(IAzureMediaServicesClient client, string resourceGroupName, string accountName,
-            string assetName, string outputFolderName, Action<string> progess, CancellationToken token)
+        private async Task<IList<string>> GenerateResults(
+            IAzureMediaServicesClient client, 
+            string resourceGroupName, 
+            string accountName,
+            string assetName, 
+            string outputFolderName, 
+            Action<string> progess, 
+            bool downloadAssets,
+            CancellationToken token)
         {
             var list = new List<string>();
             // Use Media Service and Storage APIs to download the output files to a local folder
@@ -555,7 +570,7 @@ namespace VueCore.Services
 
             string directory = Path.Combine(downloadFolder, assetName);
             Directory.CreateDirectory(directory);
-            string urlPrefix = directory.Replace(_environment.WebRootPath, string.Empty).Replace(@"\", "/"); 
+            // string urlPrefix = directory.Replace(_environment.WebRootPath, string.Empty).Replace(@"\", "/"); 
             _logger.LogInformation($"Downloading results to {directory}.");
             progess("Downloading results..");
 
@@ -575,9 +590,12 @@ namespace VueCore.Services
 
                         var blobClient = container.GetBlobClient(blobItem.Name);
                         string filename = Path.Combine(directory, blobItem.Name);
-                        var url = Path.Combine(urlPrefix, blobItem.Name);
-                        progess($"Downloading file {blobClient.Uri.AbsoluteUri} to : {url}.");
-                        await blobClient.DownloadToAsync(filename);
+                        // var url = Path.Combine(urlPrefix, blobItem.Name);
+                        progess($"Retriving file {blobClient.Uri.AbsoluteUri}");
+                        if(downloadAssets) 
+                        {
+                            await blobClient.DownloadToAsync(filename);
+                        }
                         if(Path.GetExtension(filename) == ".png" || Path.GetExtension(filename) == ".jpg")
                         {
                             list.Add(blobClient.Uri.AbsoluteUri);
