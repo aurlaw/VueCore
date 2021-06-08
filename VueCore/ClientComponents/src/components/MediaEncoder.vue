@@ -24,10 +24,13 @@
         <div class="col video-comp">
          <div class="row row-cols-1" id="video-player">
            <div class="col">
-             <div v-if="activeMediaJob != null">
-               <h3>{{activeMediaJob.title}}</h3>
-               VIDEO PLAYER TODO
-             </div>
+              <div class="jumbotron"  v-if="activeMediaJob != null">
+                <h3 class="display-4">{{activeMediaJob.title}}</h3>
+                <hr class="my-4">
+                  <div class="d-flex">
+                    <vue-video v-bind:hlsSrc="activeVideo" class="flex-fill" />
+                  </div>
+              </div>             
            </div>
          </div>   
           <div class="row row-cols-1 row-cols-md-2">
@@ -40,11 +43,12 @@
                   <strong>Input Asset:</strong> {{item.inputAssetName}}<br>
                   <strong>Output Asset:</strong> {{item.outputAssetName}}</p>
                   <button class="btn btn-primary" type="button" @click="launchVideo(item)">Launch Video</button>
+                  <button class="btn btn-danger" @click="onDeleteMedia(item)">Delete</button>
                 </div>
               </div>
             </div>
           </div>
-
+<!-- 
           <section class="video-info" v-for="item in processedData" :key="item.jobName">
             <ul>
               <li><strong>Job:</strong> {{item.jobName}}</li>
@@ -61,11 +65,10 @@
               </li>
             </ul>
             <div class="player">
-              <!-- <img v-bind:src="item.thumbnail" v-bind:alt="item.outputAssetName" class="img-fluid" /> -->
               <vue-video v-bind:hlsSrc="getHLSUrl(item.streamUrlList)" />
             </div>
               <button class="btn btn-danger" @click="onDeleteMedia(item)">Delete</button>
-          </section>
+          </section> -->
         </div>
     </div>
   </div>
@@ -107,6 +110,14 @@ export default {
   components: {
       vueDropzone,
       VueVideo
+  },
+  computed: {
+    activeVideo: function() {
+      if(this.activeMediaJob != null) {
+        return this.getHLSUrl(this.activeMediaJob.streamUrlList);
+      }
+      return '';
+    },
   },
   methods: {
     deleteMedia(mediaJob) {
@@ -218,7 +229,7 @@ export default {
       }
     },
     launchVideo(mediaJob) {
-      console.log('launchVideo', mediaJob);
+      // console.log('launchVideo', mediaJob);
       this.activeMediaJob = mediaJob;
       document.getElementById('video-player').scrollIntoView();
       //
@@ -271,7 +282,7 @@ export default {
     },
     processedDataLoad() {
       const data = getObject('mediaJobArr');
-      console.log('processedDataLoad', data);
+      // console.log('processedDataLoad', data);
       if(data != null && Array.isArray(data)) {
         this.processedData = data;
       }

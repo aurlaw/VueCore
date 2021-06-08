@@ -1,5 +1,6 @@
 <template>
-    <video-player :options="videoOptions"/>
+    <video-player :options="videoOptions" ref="videoPlayer" />
+
 </template>
 
 <script>
@@ -30,6 +31,11 @@ export default {
 				]
 			}
 		};
+	},
+	watch: {
+		hlsSrc: function(newSrc, oldSrc) {
+			this.$refs.videoPlayer.changeSource(newSrc, "application/x-mpegURL");
+		}
 	}
 };
 

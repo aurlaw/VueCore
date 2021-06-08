@@ -570,7 +570,7 @@ namespace VueCore.Services
 
             string directory = Path.Combine(downloadFolder, assetName);
             Directory.CreateDirectory(directory);
-            // string urlPrefix = directory.Replace(_environment.WebRootPath, string.Empty).Replace(@"\", "/"); 
+            string urlPrefix = directory.Replace(_environment.WebRootPath, string.Empty).Replace(@"\", "/"); 
             _logger.LogInformation($"Downloading results to {directory}.");
             progess("Downloading results..");
 
@@ -590,7 +590,7 @@ namespace VueCore.Services
 
                         var blobClient = container.GetBlobClient(blobItem.Name);
                         string filename = Path.Combine(directory, blobItem.Name);
-                        // var url = Path.Combine(urlPrefix, blobItem.Name);
+                        var url = Path.Combine(urlPrefix, blobItem.Name);
                         progess($"Retriving file {blobClient.Uri.AbsoluteUri}");
                         if(downloadAssets) 
                         {
@@ -598,7 +598,7 @@ namespace VueCore.Services
                         }
                         if(Path.GetExtension(filename) == ".png" || Path.GetExtension(filename) == ".jpg")
                         {
-                            list.Add(blobClient.Uri.AbsoluteUri);
+                            list.Add(url);
                         }
                     }
 
