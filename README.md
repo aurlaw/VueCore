@@ -26,6 +26,7 @@ Each component is mounted within an HTML element using the class `__vue-root` an
 * Azure Account with 
   * Storage
   * Computer Vision
+  * Media Services
 
 
 ### Installing Parcel
@@ -125,13 +126,12 @@ dotnet user-secrets set "AzureStorage:ConnectionString" "STORAGE CONNECTION STRI
 dotnet user-secrets set "AzureStorage:Container" "STORAGE CONTAINER NAME"
 dotnet user-secrets set "AzureVision:Endpoint" "VISION ENPOINT"
 dotnet user-secrets set "AzureVision:SubscriptionKey" "VISION SUBSCRIPTION KEY"
+dotnet user-secrets set "AzureVision:ThumbnailWidth" "300"
+dotnet user-secrets set "AzureVision:ThumbnailHeight" "300"
 ```
 
-TODO:
-https://github.com/Azure-Samples/media-services-v3-dotnet/tree/main/VideoEncoding/Encoding_H264
 
-Set up Media service and Event Hub
-
+## Set up Media service and Event Hub
 
 ### .env
 

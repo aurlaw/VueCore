@@ -26,13 +26,14 @@ namespace VueCore.Services
             _settings = config.GetSection("AzureVision").Get<AzureVisionSettings>();
         }
 
-        public async Task<VisionAnalysis> AnalyzeImageUrlAsync(string imageUrl)
+        public async Task<VisionAnalysis> AnalyzeImageUrlAsync(string imageUrl, CancellationToken token)
         {
             var client = AuthenticateClient();
+
             _logger.LogInformation($"Analyze image with ep {_settings.Endpoint}");
             // analyze image
             _logger.LogInformation($"Analyze image {imageUrl}");
-            var results = await client.AnalyzeImageAsync(imageUrl, visualFeatures: GetVisualFeatureTypes());
+            var results = await client.AnalyzeImageAsync(imageUrl, visualFeatures: GetVisualFeatureTypes(), cancellationToken:token);
             var data = JsonConvert.SerializeObject(results);
             // _logger.LogInformation(data);
             var analysis = new VisionAnalysis();
@@ -68,6 +69,18 @@ namespace VueCore.Services
             _logger.LogInformation("returning analysis");
             return analysis;
 
+        }
+
+        public async Task<Stream> GenerateThumbnailAsync(string imageUrl, int? width = null, int? height = null,CancellationToken token = default)
+        {
+            var client = AuthenticateClient();
+            _logger.LogInformation($"Generating thumbnail with ep {_settings.Endpoint}");
+            var thW = width.HasValue ? width.Value : _settings.ThumbnailWidth;
+            var thH = height.HasValue ? height.Value : _settings.ThumbnailHeight;
+            _logger.LogInformation($"Generating thumbnail with  {imageUrl} {thW}x{thH}");
+
+            var thumbnailResult = await client.GenerateThumbnailAsync(thW, thH, imageUrl, true, cancellationToken:token);
+            return thumbnailResult;
         }
 
         private ComputerVisionClient AuthenticateClient()

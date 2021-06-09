@@ -16,9 +16,13 @@
             <div class="alert alert-info" role="alert">
               {{hubStatus}}
             </div>        
+            <div class="spinner-border text-success" role="status" v-if="isProcessing">
+              <span class="sr-only">Loading...</span>
+            </div>          
+
             <div class="alert alert-secondary" role="alert" v-if="message.length">
               {{message}}
-            </div>        
+            </div>     
           </section>
         </div>
         <div class="col video-comp">
@@ -105,7 +109,9 @@ export default {
     message: '',
     hubConn: {},
     groupId: '',
-    activeMediaJob: null
+    activeMediaJob: null,
+    isProcessing:false,
+
   }),
   components: {
       vueDropzone,
@@ -183,6 +189,7 @@ export default {
       });
       this.hubConn.on("SendReceived", function(mediaJob) {
         console.log('SendReceived', mediaJob);
+        _this.isProcessing = false;
         _this.processedDataAdd(mediaJob);
         _this.removeAllFiles();
         _this.title = '';
@@ -243,7 +250,7 @@ export default {
     processFiles() {
       const headers =  { "x-vuecore-groupid": this.groupId, "x-vuecore-title": this.title };
       this.$refs.dropzone.setOption("headers", headers);
-
+      this.isProcessing = true;
       this.$refs.dropzone.processQueue();
     },
     onFileAdded(file) {

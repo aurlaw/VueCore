@@ -9,17 +9,32 @@
           <button class="btn btn-primary" @click="processFiles">Process Files</button>
           <button class="btn btn-danger" @click="removeAllFiles">Remove All Files</button>
           <hr>
+      <div class="spinner-border text-success" role="status" v-if="isProcessing">
+        <span class="sr-only">Loading...</span>
+      </div>          
         <div class="list">
           <div v-for="item in processedFiles" :key="item.url">
-            <div>
-                <span v-bind:style="setColor(item.analysis.color.accentColor)">Accent: {{item.analysis.color.accentColor}} </span>, 
-                <span v-bind:style="setColor(item.analysis.color.dominantColorBackground)">Background: {{item.analysis.color.dominantColorBackground}} </span>, 
-                <span v-bind:style="setColor(item.analysis.color.dominantColorForeground)">Foreground: {{item.analysis.color.dominantColorForeground}}  </span>
-            </div>
+            <h3 class="h5 p-2">{{item.url}}</h3>
+            <section class="section">
+              <div class="p-2">
+                  <span v-bind:style="setColor(item.analysis.color.accentColor)">Accent: {{item.analysis.color.accentColor}} </span>, 
+                  <span v-bind:style="setColor(item.analysis.color.dominantColorBackground)">Background: {{item.analysis.color.dominantColorBackground}} </span>, 
+                  <span v-bind:style="setColor(item.analysis.color.dominantColorForeground)">Foreground: {{item.analysis.color.dominantColorForeground}}  </span>
+              </div>
+                <div v-bind:style="setTheme(item.analysis.color)">
+                  <figure class="figure">
+                    <img :src="item.thumbnailUrl" class="img-fluid rounded" />
+                    <figcaption class="figure-caption">Image Theme</figcaption>
+                  </figure>                  
+                </div>
+            </section>
             <section v-if="item.analysis.descriptions.length" class="section">
               <h3>Summary:</h3>
               <div v-for="(desc, index) in item.analysis.descriptions" :key="setKey('d', index)">
                 {{desc.caption}} <small>({{desc.confidence}})</small>
+                <br />
+              <button class="btn btn-danger" type="button" @click="onDeleteImg(item)">Delete</button>
+
               </div>
             </section>
             <section v-if="item.analysis.tags.length" class="section">
@@ -34,9 +49,12 @@
                 {{tag.name}} <small>({{tag.score}})</small>
               </div>
             </section>
-            <vue-picture border-color="#0f0" v-bind:border-width="3" text-color="#fff"
-              v-bind:imgSrc="item.url" 
-              v-bind:detectedObjects="item.analysis.objects" />
+            <section class="section">
+              <vue-picture border-color="#0f0" v-bind:border-width="3" text-color="#fff"
+                v-bind:imgSrc="item.url" 
+                v-bind:detectedObjects="item.analysis.objects" />
+            </section>
+            <hr class="border border-success"/>
           </div>
         </div>          
     </div>
@@ -44,6 +62,7 @@
 <script>
 import vueDropzone from "vue2-dropzone";
 import vuePicture from './VuePicture';
+import {saveObject, removeKey, getObject} from "../utilites/storage";
 
 export default {
   name: 'Vision',
@@ -67,6 +86,7 @@ export default {
     },
     files: [],
     processedFiles:[],
+    isProcessing:false,
   }),
   components: {
       vueDropzone,
@@ -95,9 +115,12 @@ export default {
     removeAllFiles() {
     //   this.deleteFromApi();
       this.$refs.dropzone.removeAllFiles();
-      this.processedFiles = [];
+      this.files = [];
+      // this.processedFiles = [];
+      // removeKey('visionArr');
     },
     processFiles() {
+      this.isProcessing = true;
       this.$refs.dropzone.processQueue();
     },
     onFileAdded(file) {
@@ -105,15 +128,34 @@ export default {
     },
     onUploadSuccess(file, response) {
     //   console.log(file);
+      this.isProcessing = false;
       console.log(response);
       if(response.success) {
         this.processedFiles.push(response);
+        saveObject('visionArr', this.processedFiles);
+
       }
     },
     onRemovedFile(file, error, xhr) {
         if(file && file.name) {
            this.files = this.files.filter(f => f !== file.name);            
         }        
+    },
+    onDeleteImg(imgData) {
+      if(confirm("Are you sure you want to delete this item?"))
+      {
+        console.log(imgData);
+      }
+    },
+    setTheme(themeColor) {
+      return {
+        'margin': '0.5rem',
+        'padding': '0.5rem',
+        'background': themeColor.dominantColorBackground,
+        'color': themeColor.dominantColorForeground + ' !important',
+        'border': '1px solid ' + themeColor.accentColor
+        
+      }
     },
     setColor(color) {
       return {
@@ -122,8 +164,19 @@ export default {
     },
     setKey(prefix, keyId) {
       return prefix + '_' + keyId;
+    },
+    processedDataLoad() {
+      const data = getObject('visionArr');
+      // console.log('processedDataLoad', data);
+      if(data != null && Array.isArray(data)) {
+        this.processedFiles = data;
+      }
     }
+  },
+  mounted() {
+    this.processedDataLoad();
   }  
+
 }
 </script>
 <style  scoped>
@@ -150,4 +203,8 @@ export default {
       margin: 0.25rem;
       display: inline-block;    
     }
+    hr {
+      border-width: 3px !important;
+    }
+    
 </style>
