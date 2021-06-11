@@ -475,3 +475,4 @@ VueCore/wwwroot/dist/index.html
 VueCore/wwwroot/uploads/*.jpg
 VueCore/wwwroot/uploads/*.png
 VueCore/wwwroot/MediaOutput/output-*
+VueCore/publish
