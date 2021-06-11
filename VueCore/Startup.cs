@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using dotenv.net;
+using HealthChecks.UI.Client;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using VueCore.Hubs;
 using VueCore.Models.Options;
@@ -31,6 +34,22 @@ namespace VueCore
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // health checks
+            services.AddHealthChecks()
+                .AddPrivateMemoryHealthCheck(15, failureStatus: HealthStatus.Degraded)
+                .AddProcessAllocatedMemoryHealthCheck(15, failureStatus: HealthStatus.Degraded)
+                .AddVirtualMemorySizeHealthCheck(15, failureStatus: HealthStatus.Degraded)
+                .AddAzureBlobStorage(Configuration["AzureStorage:ConnectionString"], 
+                    Configuration["AzureStorage:Container"],
+                    failureStatus: HealthStatus.Degraded,
+                    tags: new string[] { "azure", "blobstorage" })
+                .AddSignalRHub($"{Configuration["Health:SignalRUrl"]}/mediaprocessHub", "MediaProcessHub",
+                    failureStatus: HealthStatus.Degraded,
+                    tags: new string[] {"signalR"})
+                .AddApplicationInsightsPublisher(); 
+
+            services.AddHealthChecksUI()
+                .AddInMemoryStorage();
 
             // custom services
             services.AddHostedService<QueuedHostedService>();
@@ -82,6 +101,12 @@ namespace VueCore
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapHub<MediaProcessHub>("/mediaprocessHub");
+                endpoints.MapHealthChecks("/healthz", new HealthCheckOptions
+                {
+                    Predicate = _ => true,
+                    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+                });                
+                endpoints.MapHealthChecksUI();
             });
 
         }
