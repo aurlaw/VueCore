@@ -11,32 +11,61 @@
           <hr>
       <div class="spinner-border text-success" role="status" v-if="isProcessing">
         <span class="sr-only">Loading...</span>
-      </div>          
-        <div class="list">
-          <div v-for="item in processedFiles" :key="item.url">
-            <h3 class="h5 p-2">{{item.url}}</h3>
-            <section class="section">
+      </div>        
+        <div class="row">
+          <div class="col-9 my-2" v-bind:class="{ 'offset-3': (index +1) % 2 === 0 }" v-for="(item, index) in processedFiles" :key="item.url">
+            <image-card 
+              :id="getVisionId(index)"
+              :imgSrc="item.thumbnailUrl"
+              :name="getVisionName(item)" 
+              :description="getVisionDescription(item)"
+              :tags="getVisionCategory(item)"
+              category="Image">
+                <div>
+                  <div class="p-2">
+                      <span v-bind:style="setColor(item.analysis.color.accentColor)">Accent: {{item.analysis.color.accentColor}} </span>, 
+                      <span v-bind:style="setColor(item.analysis.color.dominantColorBackground)">Background: {{item.analysis.color.dominantColorBackground}} </span>, 
+                      <span v-bind:style="setColor(item.analysis.color.dominantColorForeground)">Foreground: {{item.analysis.color.dominantColorForeground}}  </span>
+                  </div>
+                  <vue-picture border-color="#0f0" v-bind:border-width="3" text-color="#fff"
+                    v-bind:imgSrc="item.url" 
+                    v-bind:detectedObjects="item.analysis.objects" />
+                </div>
+              </image-card>
+
+<!-- 
+
+
               <div class="p-2">
                   <span v-bind:style="setColor(item.analysis.color.accentColor)">Accent: {{item.analysis.color.accentColor}} </span>, 
                   <span v-bind:style="setColor(item.analysis.color.dominantColorBackground)">Background: {{item.analysis.color.dominantColorBackground}} </span>, 
                   <span v-bind:style="setColor(item.analysis.color.dominantColorForeground)">Foreground: {{item.analysis.color.dominantColorForeground}}  </span>
               </div>
-                <div v-bind:style="setTheme(item.analysis.color)">
-                  <figure class="figure">
-                    <img :src="item.thumbnailUrl" class="img-fluid rounded" />
-                    <figcaption class="figure-caption">Image Theme</figcaption>
-                  </figure>                  
-                </div>
+
+            <section class="section">
+              <vue-picture border-color="#0f0" v-bind:border-width="3" text-color="#fff"
+                v-bind:imgSrc="item.url" 
+                v-bind:detectedObjects="item.analysis.objects" />
             </section>
+
             <section v-if="item.analysis.descriptions.length" class="section">
               <h3>Summary:</h3>
               <div v-for="(desc, index) in item.analysis.descriptions" :key="setKey('d', index)">
                 {{desc.caption}} <small>({{desc.confidence}})</small>
                 <br />
               <button class="btn btn-danger" type="button" @click="onDeleteImg(item)">Delete</button>
-
               </div>
             </section>
+
+            <section class="section">
+                <div v-bind:style="setTheme(item.analysis.color)">
+                  <figure class="figure">
+                    <img :src="item.thumbnailUrl" class="img-fluid rounded" />
+                    <figcaption class="figure-caption">Image Theme</figcaption>
+                  </figure>                  
+                </div>
+            </section> -->
+<!--             
             <section v-if="item.analysis.tags.length" class="section">
               <h3>Tags:</h3>                
               <span v-for="(tag, index) in item.analysis.tags" class="tag" :key="setKey('t', index)">
@@ -49,19 +78,16 @@
                 {{tag.name}} <small>({{tag.score}})</small>
               </div>
             </section>
-            <section class="section">
-              <vue-picture border-color="#0f0" v-bind:border-width="3" text-color="#fff"
-                v-bind:imgSrc="item.url" 
-                v-bind:detectedObjects="item.analysis.objects" />
-            </section>
-            <hr class="border border-success"/>
+ -->
+
           </div>
         </div>          
     </div>
 </template>
 <script>
 import vueDropzone from "vue2-dropzone";
-import vuePicture from './VuePicture';
+import vuePicture from './ui/VuePicture';
+import imageCard from './ui/ImageCard';
 import {saveObject, removeKey, getObject} from "../utilites/storage";
 
 export default {
@@ -90,7 +116,8 @@ export default {
   }),
   components: {
       vueDropzone,
-      vuePicture
+      vuePicture,
+      imageCard
   },
   methods: {
     deleteFromApi() {
@@ -111,6 +138,33 @@ export default {
         };
         fetch('/Vision/RemoveUpload', requestOptions)
         .then(d => console.log(d));
+    },
+    getVisionId(idx) {
+      return 'v_' + idx;
+    },
+    getVisionName(imageItem) {
+      if(imageItem.analysis.descriptions.length) {
+        return imageItem.analysis.descriptions[0].caption;
+      }
+      return 'No Name';
+    },
+    getVisionDescription(imageItem) {
+      let desc  = '';
+      if(imageItem.analysis.tags.length) {
+        desc = imageItem.analysis.tags.map(function(tag) {
+          return tag.caption;
+        }).join(",");
+      }
+      return desc;
+    },
+    getVisionCategory(imageItem) {
+      let desc  = '';
+      if(imageItem.analysis.categories.length) {
+        desc = imageItem.analysis.categories.map(function(tag) {
+          return tag.name;
+        }).join(",");
+      }
+      return desc;
     },
     removeAllFiles() {
     //   this.deleteFromApi();
@@ -206,5 +260,5 @@ export default {
     hr {
       border-width: 3px !important;
     }
-    
+
 </style>

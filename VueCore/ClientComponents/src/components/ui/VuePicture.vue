@@ -55,7 +55,7 @@ export default {
         return style;
     },
     drawObjects() {
-        // console.log(this.$refs.img);
+        console.log(this.$refs.img);
         // console.log(this.detectedObjects);
         this.actualW = this.$refs.img.clientWidth;
         this.actualH = this.$refs.img.clientHeight;
@@ -70,7 +70,8 @@ export default {
     onImgLoad () {
         this.drawObjects();
     }
-  }  
+  },
+
 }
 </script>
 <style scoped>
