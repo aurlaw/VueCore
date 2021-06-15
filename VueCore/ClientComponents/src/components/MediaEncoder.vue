@@ -81,7 +81,7 @@
 import vueDropzone from "vue2-dropzone";
 import {HubConnectionBuilder} from "@microsoft/signalr";
 import {saveObject, removeKey, getObject} from "../utilites/storage";
-import VueVideo from "./VueVideo";
+import VueVideo from "./ui/VueVideo";
 
 export default {
   name: 'MediaEncoder',

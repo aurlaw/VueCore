@@ -105,6 +105,10 @@ display: block;
 color: inherit;
 text-decoration: none;
 }
+.card-link:hover {
+  cursor: pointer;
+
+}
 .card-link:hover .post-title {
   transition: color 0.3s ease;
   color: #e04f62 !important;

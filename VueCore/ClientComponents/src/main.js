@@ -6,6 +6,7 @@ const Privacy = () => import('./components/Privacy.vue');
 const WebWorker = () => import('./components/WebWorker.vue');
 const Vision = () => import('./components/Vision.vue');
 const MediaEncoder = () => import('./components/MediaEncoder.vue');
+const SimpleRouter = () => import('./components/route-comp/SimpleRouter.vue');
 
 Vue.config.productionTip = false
 
@@ -15,7 +16,8 @@ const APPS = {
     Privacy,
     WebWorker,
     Vision,
-    MediaEncoder
+    MediaEncoder,
+    SimpleRouter
 };
 
 function renderAppInElement(el) {

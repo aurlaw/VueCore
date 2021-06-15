@@ -1,6 +1,6 @@
 <template>
     <div>
-        <a class="card-link" data-toggle="modal" :data-target="hashId">
+        <a class="card-link" data-toggle="modal" :data-target="hashId" @click="modalOpen">
             <article class="img-card">
                 <img class="post-image" :src="imgSrc" />
                 <div class="article-details">
@@ -43,12 +43,16 @@ export default {
         description: String,
         tags: String,
         category: String,
-        imgSrc:String
+        imgSrc:String,
+        onModalOpen:Function
     },
     methods: {
-        showDetails() {
-            alert('Show Modal');
-        },
+        modalOpen(e) {
+            console.log('modal opened', this.id);
+            if(this.onModalOpen) {
+                this.onModalOpen(this.id);
+            }
+        }
     },
     computed: {
         hashId() {

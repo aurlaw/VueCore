@@ -1,8 +1,12 @@
 <template>
-    <div class="pic">
-        <img ref="img" v-bind:src="imgSrc" class="img-fluid" @load="onImgLoad" />
+    <div class="pic" v-if="show">
+        <img ref="img" v-bind:src="imgSrc" class="img-fluid" @load="triggerLoad" />
         <div class="box" v-for="(obj, index) in detectedObjects" v-bind:style="drawBorder(obj.rectangle)" :key="index"><span>{{obj.property}}</span></div>
     </div>
+    <div v-else class="d-flex my-1 align-items-center">
+      <strong>Loading image...</strong>
+      <div class="spinner-border text-primary ml-auto" role="status" aria-hidden="true"></div>
+    </div>    
 </template>
 
 <script>
@@ -22,6 +26,10 @@ export default {
     textColor: {
       type: String,
       default: '#000'
+    },
+    isVisible: {
+      type:Boolean,
+      default:true
     }
   },
   data: () => ({
@@ -32,17 +40,23 @@ export default {
       naturalH: 0,
       adjW: 0,
       adjH: 0,
+      visibility:false
   }),
+  computed: {
+    show() {
+      if(this.isVisible) {
+        return true;
+      } else {
+        return this.visibility;
+      }
+    },
+  },
   methods: {
     drawBorder(rect) {
         const x = rect.x * this.adjW;
         const y = rect.y * this.adjH;
         const w = rect.w * this.adjW;
         const h = rect.h * this.adjH;
-
-        // color: #fff;
-        // border: 2px solid #f00;
-
 
         const style = {
             'top': y + 'px',
@@ -55,7 +69,9 @@ export default {
         return style;
     },
     drawObjects() {
-        console.log(this.$refs.img);
+      if(!this.show) {
+        return;
+      }
         // console.log(this.detectedObjects);
         this.actualW = this.$refs.img.clientWidth;
         this.actualH = this.$refs.img.clientHeight;
@@ -64,14 +80,19 @@ export default {
 
         this.adjW = this.actualW / this.naturalW;
         this.adjH = this.actualH / this.naturalH;
-
+        // console.log(`adj W: ${this.adjW} | adj H: ${this.adjH}`);
         this.imgLoaded = true;
     },      
-    onImgLoad () {
-        this.drawObjects();
-    }
+    triggerLoad () {
+      this.drawObjects();
+    },
+    setVisibilty(isVisible) {
+      let _this = this;
+      setTimeout(function(){ 
+         _this.visibility = isVisible;
+         }, 1000);
+    },
   },
-
 }
 </script>
 <style scoped>

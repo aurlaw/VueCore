@@ -20,6 +20,7 @@
               :name="getVisionName(item)" 
               :description="getVisionDescription(item)"
               :tags="getVisionCategory(item)"
+              :onModalOpen="visionOpened"
               category="Image">
                 <div>
                   <div class="p-2">
@@ -27,59 +28,12 @@
                       <span v-bind:style="setColor(item.analysis.color.dominantColorBackground)">Background: {{item.analysis.color.dominantColorBackground}} </span>, 
                       <span v-bind:style="setColor(item.analysis.color.dominantColorForeground)">Foreground: {{item.analysis.color.dominantColorForeground}}  </span>
                   </div>
-                  <vue-picture border-color="#0f0" v-bind:border-width="3" text-color="#fff"
-                    v-bind:imgSrc="item.url" 
-                    v-bind:detectedObjects="item.analysis.objects" />
+                  <vue-picture border-color="#0f0" :border-width="3" text-color="#fff" :is-visible="false"
+                    :ref="'imgRef' + getVisionId(index)"
+                    :imgSrc="item.url" 
+                    :detectedObjects="item.analysis.objects" />
                 </div>
               </image-card>
-
-<!-- 
-
-
-              <div class="p-2">
-                  <span v-bind:style="setColor(item.analysis.color.accentColor)">Accent: {{item.analysis.color.accentColor}} </span>, 
-                  <span v-bind:style="setColor(item.analysis.color.dominantColorBackground)">Background: {{item.analysis.color.dominantColorBackground}} </span>, 
-                  <span v-bind:style="setColor(item.analysis.color.dominantColorForeground)">Foreground: {{item.analysis.color.dominantColorForeground}}  </span>
-              </div>
-
-            <section class="section">
-              <vue-picture border-color="#0f0" v-bind:border-width="3" text-color="#fff"
-                v-bind:imgSrc="item.url" 
-                v-bind:detectedObjects="item.analysis.objects" />
-            </section>
-
-            <section v-if="item.analysis.descriptions.length" class="section">
-              <h3>Summary:</h3>
-              <div v-for="(desc, index) in item.analysis.descriptions" :key="setKey('d', index)">
-                {{desc.caption}} <small>({{desc.confidence}})</small>
-                <br />
-              <button class="btn btn-danger" type="button" @click="onDeleteImg(item)">Delete</button>
-              </div>
-            </section>
-
-            <section class="section">
-                <div v-bind:style="setTheme(item.analysis.color)">
-                  <figure class="figure">
-                    <img :src="item.thumbnailUrl" class="img-fluid rounded" />
-                    <figcaption class="figure-caption">Image Theme</figcaption>
-                  </figure>                  
-                </div>
-            </section> -->
-<!--             
-            <section v-if="item.analysis.tags.length" class="section">
-              <h3>Tags:</h3>                
-              <span v-for="(tag, index) in item.analysis.tags" class="tag" :key="setKey('t', index)">
-                {{tag.caption}} <small>({{tag.confidence}})</small> 
-              </span>
-            </section>
-            <section v-if="item.analysis.categories.length" class="section">
-              <h3>Categories:</h3>
-              <div v-for="(tag, index) in item.analysis.categories" :key="setKey('c', index)">
-                {{tag.name}} <small>({{tag.score}})</small>
-              </div>
-            </section>
- -->
-
           </div>
         </div>          
     </div>
@@ -165,6 +119,14 @@ export default {
         }).join(",");
       }
       return desc;
+    },
+    visionOpened(id) {
+      // console.log('Vision Opened: ' + id);
+      const imgRef = `imgRef${id}`;
+      // console.log(`Vision Opened: ${visonRef}`);
+      // console.log(this.$refs[imgRef]);
+      this.$refs[imgRef][0].setVisibilty(true);
+
     },
     removeAllFiles() {
     //   this.deleteFromApi();

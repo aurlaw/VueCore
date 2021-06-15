@@ -1,7 +1,3 @@
-
-// import users from '../data/users';
-// const users = require('../data/users');
-
 export default () => {
   // eslint-disable-next-line no-undef
     self.addEventListener("message", e => {
