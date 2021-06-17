@@ -1,12 +1,14 @@
 <template>
-<div>
-  <ul>
-    <li><v-link :href="getLink('/home/vueroute')">Home</v-link></li>
-    <li><v-link :href="getLink('/home/vueroute/about')">About</v-link></li>
-    <li><v-link :href="getLink('/home/vueroute/foo')">Under Construction</v-link></li>
+<section>
+<ul class="nav nav-tabs">
+    <li class="nav-item"><v-link class="nav-link" :class="setActiveClass('/home/vueroute')" :href="getLink('/home/vueroute')">Home</v-link></li>
+    <li class="nav-item"><v-link class="nav-link" :class="setActiveClass('/home/vueroute/about')" :href="getLink('/home/vueroute/about')">About</v-link></li>
+    <li class="nav-item"><v-link class="nav-link" :class="setActiveClass('/home/vueroute/foo')" :href="getLink('/home/vueroute/foo')">Under Construction</v-link></li>
   </ul>
-  <slot></slot>
-</div>
+  <article>
+    <slot></slot>
+  </article>
+</section>
 </template>
 
 <script>
@@ -19,7 +21,15 @@ export default {
   methods: {
       getLink(linkPath) {
           return linkPath;
-      }
+      },
+      setActiveClass(linkPath) {
+        return window.location.pathname === linkPath ? 'active' : '';
+      },
   }
 }
 </script>
+<style scoped>
+  article {
+    margin: 1rem 2rem;
+  }
+</style>
