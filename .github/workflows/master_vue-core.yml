@@ -32,12 +32,15 @@ jobs:
     - run: npm install
 
     - name: Build Vue
-    - run: npm run build:parcel
+      uses: actions/setup-node@v2
+      run: npm run build:parcel
 
     - name: Build with dotnet
+      uses: actions/setup-dotnet@v1
       run: dotnet build --configuration Release
 
     - name: dotnet publish
+      uses: actions/setup-dotnet@v1
       run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/publish
 
     - name: Upload artifact for deployment job
