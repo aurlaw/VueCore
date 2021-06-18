@@ -31,7 +31,8 @@ jobs:
         node-version: 10.15.1
     - run: npm install
 
-
+    - name: Build Vue
+    - run: npm run build:parcel
 
     - name: Build with dotnet
       run: dotnet build --configuration Release
