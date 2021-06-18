@@ -12,9 +12,17 @@ on:
 jobs:
   build:
     runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: ./vuecore
 
     steps:
     - uses: actions/checkout@v2
+
+    - name: Set up Yarn
+      uses: borales/actions-yarn@v2.3.0
+      with:
+        cmd: install # will run `yarn install` command
 
     - name: Set up .NET Core
       uses: actions/setup-dotnet@v1
@@ -22,17 +30,21 @@ jobs:
         dotnet-version: '5.0.x'
         include-prerelease: true
 
+    - uses: borales/actions-yarn@v2.3.0
+      with:
+        cmd: build:parcel # will run `yarn build:parcel` command
+
     - name: Build with dotnet
       run: dotnet build --configuration Release
 
     - name: dotnet publish
-      run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
+      run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/publish
 
     - name: Upload artifact for deployment job
       uses: actions/upload-artifact@v2
       with:
         name: .net-app
-        path: ${{env.DOTNET_ROOT}}/myapp
+        path: ${{env.DOTNET_ROOT}}/publish
 
   deploy:
     runs-on: windows-latest
