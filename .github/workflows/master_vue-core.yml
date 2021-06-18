@@ -23,6 +23,7 @@ jobs:
     - uses: actions/setup-node@v1
       with:
         node-version: 10
+    - run: npm install
 
     - name: Set up .NET Core
       uses: actions/setup-dotnet@v1
@@ -30,8 +31,6 @@ jobs:
         dotnet-version: '5.0.x'
         include-prerelease: true
 
-    - uses: actions/setup-node@v1
-    - run: npm install
 
     - name: Build with dotnet
       run: dotnet build --configuration Release
