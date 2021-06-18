@@ -5,8 +5,10 @@
     <li class="nav-item"><v-link class="nav-link" :class="setActiveClass('/home/vueroute/about')" :href="getLink('/home/vueroute/about')">About</v-link></li>
     <li class="nav-item"><v-link class="nav-link" :class="setActiveClass('/home/vueroute/foo')" :href="getLink('/home/vueroute/foo')">Under Construction</v-link></li>
   </ul>
-  <article>
-    <slot></slot>
+  <article class="shadow">
+    <div class="container">
+      <slot></slot>
+    </div>
   </article>
 </section>
 </template>
@@ -30,6 +32,7 @@ export default {
 </script>
 <style scoped>
   article {
-    margin: 1rem 2rem;
+    padding: 1rem;
+    min-height: 300px;
   }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container-fluid shadow">
     <div class="row">
         <div class="col media-comp">
             <h2>{{name}}</h2>

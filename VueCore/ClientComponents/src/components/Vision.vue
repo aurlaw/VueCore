@@ -1,5 +1,5 @@
 <template>
-    <div class="vision">
+    <div class="vision shadow">
         <h2>{{name}}</h2>
           <vue-dropzone ref="dropzone" id="drop1" 
               :options="dropOptions" 

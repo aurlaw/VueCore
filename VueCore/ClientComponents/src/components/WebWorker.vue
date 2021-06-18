@@ -1,5 +1,5 @@
 <template>
-    <div class="ww">
+    <div class="ww shadow">
           <h2>{{name}}</h2>
           Count: {{count}}<br>
           WW Count: {{wwCount}}

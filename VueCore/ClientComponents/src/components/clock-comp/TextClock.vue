@@ -73,11 +73,16 @@ export default {
 </script>
 <style scoped>
     .text-clock {
-        display: flex;
+        position: relative;
+        margin: auto;
         top: 50%;
-        left: 50%;
+        left: 25%;
+        margin-top: 2rem;
+        display: flex;
+        /* position: absolute;
+        top: 50%;
+        left: 50%; */
         font-size: 3rem;
-        position: absolute;
         color: #0b7e32;
         transform: translate3d(1.5rem, -50%, 0);
         white-space: nowrap;
@@ -103,4 +108,11 @@ export default {
         display: flex;
         align-items: center;
     }
+    @media screen and (min-width: 36em) {
+      .text-clock {
+        left: 0;
+        margin-top: 0;
+      }
+    }
+
 </style>

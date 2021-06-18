@@ -184,7 +184,15 @@ text-decoration: none;
       grid-template-rows: 12rem 1fr;
     }
   }
-}        
+}       
+
+.shadow {
+  box-shadow: 0px 0px 10px #999 !important;
+}
+.nav-tabs .nav-link.active {
+  background-color: rgb(151 178 202) !important;
+  font-weight: 800;
+}
 /* 
 
 .modal-dialog {

@@ -60,15 +60,20 @@ export default {
 </script>
 <style scoped>
 .analog-clock {
+  position: relative;
+  margin: auto;
+  left: 0;
   top: 50%;
-  right: 50%;
+  /* position: absolute;
+  top: 50%;
+  right: 50%; */
   width: 35vh;
   height: 35vh;
-  position: absolute;
   border-radius: 100%;
   background-color: white;
   transform: translate3d(-1.5rem, -50%, 0);
-  filter: drop-shadow(0 0.125rem 0.5rem rgba(black, 0.1));
+  /* filter: drop-shadow(0 0.125rem 0.5rem rgba(black, 0.1)); */
+  box-shadow: 0px 0px 10px #999;
 }
 .analog-clock ::after {
     top: 50%;
@@ -147,11 +152,15 @@ export default {
       width: 1px;
       height: 45%;
       border-radius: 0;
-      background-color: #0f0ca0;
+      background-color: #95a4d6;
       transition: transform 100ms cubic-bezier(.6, .05, 0, 1.6);
  }
  .analog-clock__hand.-seconds::after {
         height: 12.5%;
     }
-
+@media screen and (min-width: 36em) {
+    .analog-clock {
+    left: 25%;
+  }
+}
 </style>

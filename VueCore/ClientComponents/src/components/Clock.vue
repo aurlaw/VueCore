@@ -1,7 +1,11 @@
 <template>
-    <div class="clock-wrapper">
+    <div class="clock-wrapper row justify-content-md-center">
+      <div class="col-sm">
         <analog-clock v-if="tick" :minute="time.minutes" :tick="tick"></analog-clock>
+      </div>
+      <div class="col-sm">
         <text-clock :time="time" v-if="tick"></text-clock>
+      </div>
     </div>
 </template>
 <script>
@@ -39,9 +43,9 @@ export default {
 </script>
 <style scoped>
     .clock-wrapper {
-        position: relative;
+        /* position: relative; */
         margin: 2rem;
-        height: 200px;
+        min-height: 200px;
     }
     
 </style>
