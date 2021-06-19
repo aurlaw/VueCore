@@ -18,14 +18,19 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    # - name: Set Tag Name
+    #   id: vars
+    #   run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
+
     - name: Set Tag Name
       id: vars
-      run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
+      run: |
+        echo "name=tag::${GITHUB_REF#refs/*/}"
 
-    # - name: Check Tag Name
-    #   env:
-    #     RELEASE_VERSION: ${{ steps.vars.outputs.tag }}
-    #   run: echo ${{ steps.vars.outputs.tag }}
+    - name: Check Tag Name
+      # env:
+      #   RELEASE_VERSION: ${{ steps.vars.outputs.tag }}
+      run: echo ${{ steps.vars.outputs.tag }}
 
     - name: Set up .NET Core
       uses: actions/setup-dotnet@v1
