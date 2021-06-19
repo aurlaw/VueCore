@@ -1,3 +1,4 @@
+using System.Reflection;
 using Microsoft.AspNetCore.Mvc;
 using VueCore.Models;
 
@@ -8,7 +9,9 @@ namespace VueCore.Components
     {
         public IViewComponentResult Invoke(bool show)
         {
-            var version =  GetType().Assembly.GetName().Version.ToString();
+            var version =  Assembly.GetEntryAssembly()
+                .GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
+// ; GetType().Assembly.GetName().Version.ToString();
             return View(new VersionModel{Show= show, Version = version});
         }
     }
