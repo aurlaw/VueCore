@@ -26,17 +26,25 @@ jobs:
     - name: Set the value
       id: step_one
       run: |
-        echo "action_state=yellow" >> $GITHUB_ENV
+        echo ("action_state=yellow") >> $env:GITHUB_ENV
+
     - name: Use the value
       id: step_two
       run: |
         echo "${{ env.action_state }}" # This will output 'yellow'
 
 
+# - run: |
+#    chcp 65001 #set code page to utf-8
+#    echo ("BRANCH_NAME=" + $env:GITHUB_REF.replace('refs/heads/', '')) >> $env:GITHUB_ENV
+
+# - run: echo "${{ env.BRANCH_NAME }}"
+# - run: echo $env:BRANCH_NAME
+        # echo "tag=${GITHUB_REF#refs/*/}" >> $env:GITHUB_ENV
 
     - name: Set Tag Name
       run: |
-        echo "tag=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+        echo "tag=${env:GITHUB_REF#refs/*/}" >> $env:GITHUB_ENV
 
     - name: Check Tag Name
       # env:
