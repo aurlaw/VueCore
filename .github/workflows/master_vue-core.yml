@@ -22,6 +22,18 @@ jobs:
     #   id: vars
     #   run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
 
+
+    - name: Set the value
+      id: step_one
+      run: |
+        echo "action_state=yellow" >> $GITHUB_ENV
+    - name: Use the value
+      id: step_two
+      run: |
+        echo "${{ env.action_state }}" # This will output 'yellow'
+
+
+
     - name: Set Tag Name
       run: |
         echo "tag=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
@@ -31,17 +43,6 @@ jobs:
       #   RELEASE_VERSION: ${{ steps.vars.outputs.tag }}
       run: |
         echo ${{ env.tag }}
-
-
-# steps:
-#   - name: Set the value
-#     id: step_one
-#     run: |
-#       echo "action_state=yellow" >> $GITHUB_ENV
-#   - name: Use the value
-#     id: step_two
-#     run: |
-#       echo "${{ env.action_state }}" # This will output 'yellow'
 
 
     - name: Set up .NET Core
