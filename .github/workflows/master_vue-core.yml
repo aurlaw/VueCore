@@ -40,7 +40,7 @@ jobs:
 
     - name: Set Tag Name
       run: |
-        echo "(tag=${env.GITHUB_REF#refs/*/})" >> $env:GITHUB_ENV
+        echo "(tag=${env:GITHUB_REF#refs/*/})" >> $env:GITHUB_ENV
 
     - name: Check Tag Name
       # env:
