@@ -24,7 +24,7 @@ jobs:
     - name: Tag 
       run: |
           echo $RELEASE_VERSION
-          echo ${{ env.RELEASE_VERSION:10 }}
+          echo ${{ env.RELEASE_VERSION }}
 
     - name: Set up .NET Core
       uses: actions/setup-dotnet@v1
