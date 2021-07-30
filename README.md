@@ -137,3 +137,20 @@ dotnet user-secrets set "AzureVision:ThumbnailHeight" "300"
 
 Use [sample.env](VueCore/sample.env) as a template for the .env file to be created. The .env file must be placed at the root of the sample (same location than sample.env).
 Connect to the Azure portal with your browser and go to your media services account / API access to get the .ENV data to store to the .env file.
+
+
+## Local SMTP via Docker
+
+```
+docker run -p 3000:80 -p 2525:25 rnwood/smtp4dev:linux-amd64-3.1.0-ci0856
+```
+
+SMTP:
+
+```
+Server: localhost
+Port: 2525
+```
+
+Access dashboard: 
+http://localhost:3000/

@@ -18,6 +18,9 @@ using VueCore.Models.Options;
 using VueCore.Services;
 using VueCore.Services.Hosted;
 using VueCore.Services.Security;
+using Elsa;
+using Elsa.Persistence.EntityFramework.Core.Extensions;
+using Elsa.Persistence.EntityFramework.Sqlite;
 
 namespace VueCore
 {
@@ -51,6 +54,18 @@ namespace VueCore
             services.AddHealthChecksUI()
                 .AddInMemoryStorage();
 
+            // elsa integration
+            var elsaSection = Configuration.GetSection("Elsa");
+            services
+                .AddElsa(elsa => elsa
+                    .UseEntityFrameworkPersistence(ef => ef.UseSqlite())
+                    .AddConsoleActivities()
+                    .AddHttpActivities(elsaSection.GetSection("Server").Bind)
+                    .AddEmailActivities(elsaSection.GetSection("Smtp").Bind)
+                    .AddQuartzTemporalActivities()
+                    .AddWorkflowsFrom<Startup>()
+                );
+
             // custom services
             services.AddHostedService<QueuedHostedService>();
             services.AddSingleton<IStorageService, StorageService>();
@@ -65,8 +80,10 @@ namespace VueCore
             });
 
             // routing/controllers
+            services.AddElsaApiEndpoints();
             services.AddRouting(options => options.LowercaseUrls = true);
-            services.AddControllersWithViews();
+            services.AddMvc();
+            // services.AddRazorPages();
 
             // add mediatR
             services.AddMediatR(typeof(Startup).Assembly);   
@@ -90,7 +107,7 @@ namespace VueCore
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
+            app.UseHttpActivities();
             app.UseRouting();
 
             app.UseAuthorization();
@@ -107,6 +124,8 @@ namespace VueCore
                     ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
                 });                
                 endpoints.MapHealthChecksUI();
+                endpoints.MapFallbackToPage("/_Host");
+
             });
 
         }
