@@ -35,7 +35,7 @@ RUN yarn build
 FROM mcr.microsoft.com/dotnet/aspnet:5.0.4-alpine3.13-amd64
 
 WORKDIR /app
-COPY --from=build-env /app/out .
+COPY --from=build-env /app/publish .
 ENTRYPOINT ["dotnet", "VueCore.dll"]
 # Heroku
 # CMD ASPNETCORE_URLS=http://*:$PORT dotnet ASPNETReact.dll

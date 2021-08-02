@@ -139,6 +139,24 @@ Use [sample.env](VueCore/sample.env) as a template for the .env file to be creat
 Connect to the Azure portal with your browser and go to your media services account / API access to get the .ENV data to store to the .env file.
 
 
+## Entity Migrations
+
+```
+dotnet ef migrations add MIGRATION_NAME -c BlogContext -o Data/Migrations
+
+```
+
+## Elsa Dashboard
+
+```
+docker run -t -i -e ELSA__SERVER__BASEADDRESS='https://localhost:5001' -p 14000:80 elsaworkflows/elsa-dashboard:latest
+```
+
+Access Elsa dashboard: 
+http://localhost:14000/
+
+
+
 ## Local SMTP via Docker
 
 ```
@@ -152,5 +170,6 @@ Server: localhost
 Port: 2525
 ```
 
-Access dashboard: 
+Access SMTP dashboard: 
 http://localhost:3000/
+

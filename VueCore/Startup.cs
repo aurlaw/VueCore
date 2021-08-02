@@ -21,6 +21,11 @@ using VueCore.Services.Security;
 using Elsa;
 using Elsa.Persistence.EntityFramework.Core.Extensions;
 using Elsa.Persistence.EntityFramework.Sqlite;
+using VueCore.Data;
+using Microsoft.EntityFrameworkCore;
+using VueCore.Providers.WorkflowContexts;
+using VueCore.Data.StartupTasks;
+using Elsa.Runtime;
 
 namespace VueCore
 {
@@ -56,15 +61,24 @@ namespace VueCore
 
             // elsa integration
             var elsaSection = Configuration.GetSection("Elsa");
+            var sqliteConn = Configuration.GetConnectionString("Sqlite");
+
             services
+                .AddDbContextFactory<BlogContext>(options => options.UseSqlite(sqliteConn, sql => 
+                    sql.MigrationsAssembly(typeof(Startup).Assembly.FullName)))
+                .AddCors(cors => cors.AddDefaultPolicy(policy => 
+                    policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin()))
                 .AddElsa(elsa => elsa
-                    .UseEntityFrameworkPersistence(ef => ef.UseSqlite())
+                    .UseEntityFrameworkPersistence(ef => ef.UseSqlite(sqliteConn))
                     .AddConsoleActivities()
+                    .AddJavaScriptActivities()
                     .AddHttpActivities(elsaSection.GetSection("Server").Bind)
                     .AddEmailActivities(elsaSection.GetSection("Smtp").Bind)
                     .AddQuartzTemporalActivities()
                     .AddWorkflowsFrom<Startup>()
-                );
+                )
+                .AddWorkflowContextProvider<BlogPostWorkflowContextProvider>()
+                .AddStartupTask<RunBlogMigrations>();
 
             // custom services
             services.AddHostedService<QueuedHostedService>();
@@ -109,7 +123,7 @@ namespace VueCore
             app.UseStaticFiles();
             app.UseHttpActivities();
             app.UseRouting();
-
+            app.UseCors();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

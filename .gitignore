@@ -477,3 +477,4 @@ VueCore/wwwroot/uploads/*.png
 VueCore/wwwroot/MediaOutput/output-*
 VueCore/publish
 VueCore/elsa.sqlite.db
+VueCore/blog.db
