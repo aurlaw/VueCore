@@ -96,8 +96,7 @@ namespace VueCore
             // routing/controllers
             services.AddElsaApiEndpoints();
             services.AddRouting(options => options.LowercaseUrls = true);
-            services.AddMvc();
-            // services.AddRazorPages();
+            services.AddControllersWithViews();
 
             // add mediatR
             services.AddMediatR(typeof(Startup).Assembly);   
@@ -138,8 +137,6 @@ namespace VueCore
                     ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
                 });                
                 endpoints.MapHealthChecksUI();
-                endpoints.MapFallbackToPage("/_Host");
-
             });
 
         }

@@ -6,6 +6,7 @@ using Elsa.Activities.Http.Models;
 using Elsa.Services;
 using Elsa.Services.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using VueCore.Data;
 using VueCore.Models.Domain;
 
@@ -14,18 +15,23 @@ namespace VueCore.Providers.WorkflowContexts
     public class BlogPostWorkflowContextProvider : WorkflowContextRefresher<BlogPost>
     {
         private readonly IDbContextFactory<BlogContext> _blogContextFactory;
-        public BlogPostWorkflowContextProvider(IDbContextFactory<BlogContext> blogContextFactory)
+        private readonly ILogger<BlogPostWorkflowContextProvider> _logger;
+
+        public BlogPostWorkflowContextProvider(IDbContextFactory<BlogContext> blogContextFactory, ILogger<BlogPostWorkflowContextProvider> logger)
         {
             _blogContextFactory = blogContextFactory;
+            _logger = logger;
         }
         public override async ValueTask<BlogPost> LoadAsync(LoadWorkflowContext context, CancellationToken cancellationToken = default)
         {
             var blogPostId = context.ContextId;
+            _logger.LogInformation($"LoadAsync...{blogPostId}");            
             await using var dbContext = _blogContextFactory.CreateDbContext();
             return await dbContext.BlogPosts.AsQueryable().FirstOrDefaultAsync(x => x.Id == blogPostId, cancellationToken);
         }
         public override async ValueTask<string> SaveAsync(SaveWorkflowContext<BlogPost> context, CancellationToken cancellationToken = default)
         {
+            _logger.LogInformation("SaveAsync...");            
             var blogPost = context.Context;
             await using var dbContext = _blogContextFactory.CreateDbContext();
             var dbSet = dbContext.BlogPosts;
@@ -40,6 +46,8 @@ namespace VueCore.Providers.WorkflowContexts
                 // set context
                 context.WorkflowExecutionContext.WorkflowContext = blogPost;
                 context.WorkflowExecutionContext.ContextId = blogPost.Id;
+                _logger.LogInformation($"Save new...{blogPost.Id}");            
+
                 // add post to db
                 await dbSet.AddAsync(blogPost, cancellationToken);
             } 
@@ -51,6 +59,7 @@ namespace VueCore.Providers.WorkflowContexts
                     .Where(x => x.Id == blogPostId)
                     .FirstAsync(cancellationToken);
 
+                _logger.LogInformation($"Save existing...{blogPost.Id}");            
                 // update
                 dbContext.Entry(existingPost).CurrentValues.SetValues(blogPost);    
             }

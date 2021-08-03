@@ -478,3 +478,7 @@ VueCore/wwwroot/MediaOutput/output-*
 VueCore/publish
 VueCore/elsa.sqlite.db
 VueCore/blog.db
+
+BAK/
+VueCore/blog.db-shm
+VueCore/blog.db-wal
