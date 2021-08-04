@@ -32,8 +32,8 @@
     <PackageReference Include="Elsa.Persistence.EntityFramework.Sqlite" Version="2.1.1.463" />
     <PackageReference Include="Elsa.Server.Api" Version="2.1.1.463" />
     <PackageReference Include="Elsa.Designer.Components.Web" Version="2.1.1.463" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.6" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.6" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.6" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.8" />
   </ItemGroup>
 </Project>

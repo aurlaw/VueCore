@@ -76,7 +76,9 @@ namespace VueCore
                     .AddEmailActivities(elsaSection.GetSection("Smtp").Bind)
                     .AddQuartzTemporalActivities()
                     .AddWorkflowsFrom<Startup>()
+                    .AddUserActivities()
                 )
+                .AddElsaDefinitions()
                 .AddWorkflowContextProvider<BlogPostWorkflowContextProvider>()
                 .AddStartupTask<RunBlogMigrations>();
 
@@ -92,6 +94,7 @@ namespace VueCore
                     queueCapacity = 100;
                 return new BackgroundTaskQueue(queueCapacity);
             });
+            services.AddSingleton<IPasswordHasher, PasswordHasher>();
 
             // routing/controllers
             services.AddElsaApiEndpoints();
