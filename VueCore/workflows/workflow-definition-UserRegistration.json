@@ -1,0 +1,881 @@
+{
+  "$id": "1",
+  "definitionId": "8477e35a7f2044a9bce1a71f3ef3113a",
+  "versionId": "6b861c5c799742288331c39f23e3565c",
+  "name": "UserRegistration",
+  "displayName": "User Registration",
+  "version": 44,
+  "variables": {
+    "$id": "2",
+    "data": {}
+  },
+  "customAttributes": {
+    "$id": "3",
+    "data": {}
+  },
+  "contextOptions": {
+    "$id": "4",
+    "contextType": "VueCore.Models.RegistrationModel, VueCore",
+    "contextFidelity": "Burst"
+  },
+  "isSingleton": false,
+  "persistenceBehavior": "WorkflowBurst",
+  "deleteCompletedInstances": false,
+  "isPublished": true,
+  "isLatest": true,
+  "activities": [
+    {
+      "$id": "5",
+      "activityId": "c8a80423-1ef4-4d0c-8440-46f519f3849d",
+      "type": "HttpEndpoint",
+      "name": "HttpEndpointUR",
+      "displayName": "HTTP Endpoint",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "6",
+          "name": "Path",
+          "expressions": {
+            "$id": "7",
+            "Literal": "/elsa/v2/user-register"
+          }
+        },
+        {
+          "$id": "8",
+          "name": "Methods",
+          "expressions": {
+            "$id": "9",
+            "Json": "[\"POST\"]"
+          }
+        },
+        {
+          "$id": "10",
+          "name": "ReadContent",
+          "expressions": {
+            "$id": "11",
+            "Literal": "true"
+          }
+        },
+        {
+          "$id": "12",
+          "name": "TargetType",
+          "expressions": {
+            "$id": "13",
+            "Literal": "VueCore.Models.RegistrationModel, VueCore"
+          }
+        }
+      ],
+      "propertyStorageProviders": {
+        "Output": "Default"
+      }
+    },
+    {
+      "$id": "14",
+      "activityId": "eae1517c-bb9b-4042-9723-9595be2011f5",
+      "type": "CreateUser",
+      "name": "CreateUser",
+      "displayName": "Create User",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "15",
+          "name": "UserName",
+          "syntax": "JavaScript",
+          "expressions": {
+            "$id": "16",
+            "JavaScript": "input.Body.Name;",
+            "Liquid": ""
+          }
+        },
+        {
+          "$id": "17",
+          "name": "Email",
+          "syntax": "JavaScript",
+          "expressions": {
+            "$id": "18",
+            "JavaScript": "input.Body.Email;"
+          }
+        },
+        {
+          "$id": "19",
+          "name": "Password",
+          "syntax": "JavaScript",
+          "expressions": {
+            "$id": "20",
+            "JavaScript": "input.Body.Password;"
+          }
+        }
+      ],
+      "propertyStorageProviders": {}
+    },
+    {
+      "$id": "21",
+      "activityId": "c6599fcb-2ff5-4397-bf8c-e57c2489c88d",
+      "type": "WriteHttpResponse",
+      "displayName": "HTTP Response",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "22",
+          "name": "Content",
+          "syntax": "JavaScript",
+          "expressions": {
+            "$id": "23",
+            "JavaScript": "const model = {\n    userModel: activities.CreateUser.Output(),\n    message: \"Request for Account Activation has been sent\"\n}\nreturn JSON.stringify(model, null, 2);"
+          }
+        },
+        {
+          "$id": "24",
+          "name": "ContentType",
+          "expressions": {
+            "$id": "25",
+            "Literal": "application/json"
+          }
+        },
+        {
+          "$id": "26",
+          "name": "StatusCode",
+          "expressions": {
+            "$id": "27"
+          }
+        },
+        {
+          "$id": "28",
+          "name": "CharSet",
+          "expressions": {
+            "$id": "29"
+          }
+        },
+        {
+          "$id": "30",
+          "name": "ResponseHeaders",
+          "expressions": {
+            "$id": "31"
+          }
+        }
+      ],
+      "propertyStorageProviders": {}
+    },
+    {
+      "$id": "32",
+      "activityId": "9e8fbbba-ee14-4802-84b0-a1511591e4e2",
+      "type": "SendEmail",
+      "displayName": "Send Email",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "33",
+          "name": "From",
+          "expressions": {
+            "$id": "34",
+            "Literal": "workflow@acme.com"
+          }
+        },
+        {
+          "$id": "35",
+          "name": "To",
+          "syntax": "JavaScript",
+          "expressions": {
+            "$id": "36",
+            "Json": "",
+            "JavaScript": "[activities.CreateUser.Output().Email];"
+          }
+        },
+        {
+          "$id": "37",
+          "name": "Subject",
+          "expressions": {
+            "$id": "38",
+            "Literal": "Activate your account!"
+          }
+        },
+        {
+          "$id": "39",
+          "name": "Attachments",
+          "expressions": {
+            "$id": "40"
+          }
+        },
+        {
+          "$id": "41",
+          "name": "Body",
+          "syntax": "Liquid",
+          "expressions": {
+            "$id": "42",
+            "Liquid": "<p>Welcome, {{ Activities.CreateUser.Output.Name }}!</p>\n<p>Please <a href=\"{{ 'Activate' | signal_url }}\">activate your account </a> within the next 5 minutes.</p>"
+          }
+        },
+        {
+          "$id": "43",
+          "name": "Cc",
+          "expressions": {
+            "$id": "44"
+          }
+        },
+        {
+          "$id": "45",
+          "name": "Bcc",
+          "expressions": {
+            "$id": "46"
+          }
+        }
+      ],
+      "propertyStorageProviders": {
+        "To": "Default"
+      }
+    },
+    {
+      "$id": "47",
+      "activityId": "2918e1e9-beb8-4b18-914d-af48094fd879",
+      "type": "Fork",
+      "displayName": "Activation Fork",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "48",
+          "name": "Branches",
+          "expressions": {
+            "$id": "49",
+            "Json": "[\"Activate\",\"Reminder\"]"
+          }
+        }
+      ],
+      "propertyStorageProviders": {}
+    },
+    {
+      "$id": "50",
+      "activityId": "7b7f764e-d4f8-441a-bb06-cee6dce87702",
+      "type": "SendEmail",
+      "displayName": "Activation Email",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "51",
+          "name": "From",
+          "expressions": {
+            "$id": "52",
+            "Literal": "workflow@acme.com"
+          }
+        },
+        {
+          "$id": "53",
+          "name": "To",
+          "syntax": "JavaScript",
+          "expressions": {
+            "$id": "54",
+            "JavaScript": "[activities.CreateUser.Output().Email];"
+          }
+        },
+        {
+          "$id": "55",
+          "name": "Subject",
+          "expressions": {
+            "$id": "56",
+            "Literal": "Thank you for activating your account!"
+          }
+        },
+        {
+          "$id": "57",
+          "name": "Attachments",
+          "expressions": {
+            "$id": "58"
+          }
+        },
+        {
+          "$id": "59",
+          "name": "Body",
+          "syntax": "Liquid",
+          "expressions": {
+            "$id": "60",
+            "Literal": "<p>Welcome, {{ Activities.CreateUser.Output.Name }}!</p>\n<p>Thank you for your account activation!</p>",
+            "Liquid": "<p>Welcome, {{ Activities.CreateUser.Output.Name }}!</p>\n<p>Thank you for your account activation!</p>"
+          }
+        },
+        {
+          "$id": "61",
+          "name": "Cc",
+          "expressions": {
+            "$id": "62"
+          }
+        },
+        {
+          "$id": "63",
+          "name": "Bcc",
+          "expressions": {
+            "$id": "64"
+          }
+        }
+      ],
+      "propertyStorageProviders": {}
+    },
+    {
+      "$id": "65",
+      "activityId": "f6efd04d-9e23-4fcd-8f71-3fd8a949ef90",
+      "type": "SignalReceived",
+      "displayName": "Signal Received",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "66",
+          "name": "Signal",
+          "expressions": {
+            "$id": "67",
+            "Literal": "Activate"
+          }
+        }
+      ],
+      "propertyStorageProviders": {}
+    },
+    {
+      "$id": "68",
+      "activityId": "a8e1fb4f-e8db-4ee4-94c0-9b167ac68c09",
+      "type": "Timer",
+      "displayName": "Reminder Timer",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "69",
+          "name": "Timeout",
+          "syntax": "JavaScript",
+          "expressions": {
+            "$id": "70",
+            "JavaScript": "Duration.FromMinutes(2)"
+          }
+        }
+      ],
+      "propertyStorageProviders": {}
+    },
+    {
+      "$id": "71",
+      "activityId": "7b668666-fa51-46d9-801f-fdb145410433",
+      "type": "SendEmail",
+      "displayName": "Reminder Email",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "72",
+          "name": "From",
+          "expressions": {
+            "$id": "73",
+            "Literal": "workflow@acme.com"
+          }
+        },
+        {
+          "$id": "74",
+          "name": "To",
+          "syntax": "JavaScript",
+          "expressions": {
+            "$id": "75",
+            "JavaScript": "[activities.CreateUser.Output().Email];"
+          }
+        },
+        {
+          "$id": "76",
+          "name": "Subject",
+          "expressions": {
+            "$id": "77",
+            "Literal": "Your account has not been activated!",
+            "Liquid": "{{ Variables.Document.Author.Name }} is waiting for your review! "
+          }
+        },
+        {
+          "$id": "78",
+          "name": "Attachments",
+          "expressions": {
+            "$id": "79"
+          }
+        },
+        {
+          "$id": "80",
+          "name": "Body",
+          "syntax": "Liquid",
+          "expressions": {
+            "$id": "81",
+            "Liquid": "<p>Hello, {{ Activities.CreateUser.Output.Name }}!</p>\n<p>Don't forget to <a href=\"{{ 'Activate' | signal_url }}\">activate your account </a></p>\n<p>If not activated, it will be removed</p>"
+          }
+        },
+        {
+          "$id": "82",
+          "name": "Cc",
+          "expressions": {
+            "$id": "83"
+          }
+        },
+        {
+          "$id": "84",
+          "name": "Bcc",
+          "expressions": {
+            "$id": "85"
+          }
+        }
+      ],
+      "propertyStorageProviders": {}
+    },
+    {
+      "$id": "86",
+      "activityId": "70f1ae97-d085-4903-bd7f-e707b183eeac",
+      "type": "ActivateUser",
+      "displayName": "Activate User",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "87",
+          "name": "UserId",
+          "syntax": "JavaScript",
+          "expressions": {
+            "$id": "88",
+            "JavaScript": "activities.CreateUser.Output().Id;"
+          }
+        }
+      ],
+      "propertyStorageProviders": {}
+    },
+    {
+      "$id": "89",
+      "activityId": "054b9529-d995-41bd-bf6e-877529a1d9b7",
+      "type": "WriteHttpResponse",
+      "displayName": "HTTP Response",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "90",
+          "name": "Content",
+          "expressions": {
+            "$id": "91",
+            "Literal": "<h1>User not found!</h1>"
+          }
+        },
+        {
+          "$id": "92",
+          "name": "ContentType",
+          "expressions": {
+            "$id": "93",
+            "Literal": "text/html"
+          }
+        },
+        {
+          "$id": "94",
+          "name": "StatusCode",
+          "expressions": {
+            "$id": "95"
+          }
+        },
+        {
+          "$id": "96",
+          "name": "CharSet",
+          "expressions": {
+            "$id": "97"
+          }
+        },
+        {
+          "$id": "98",
+          "name": "ResponseHeaders",
+          "expressions": {
+            "$id": "99"
+          }
+        }
+      ],
+      "propertyStorageProviders": {}
+    },
+    {
+      "$id": "100",
+      "activityId": "7ef921f5-f90f-4a13-82f2-4b804b496391",
+      "type": "Redirect",
+      "displayName": "Redirect Home",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "101",
+          "name": "Location",
+          "expressions": {
+            "$id": "102",
+            "Literal": "https://localhost:5001/home/vueroute"
+          }
+        },
+        {
+          "$id": "103",
+          "name": "Permanent",
+          "expressions": {
+            "$id": "104"
+          }
+        }
+      ],
+      "propertyStorageProviders": {}
+    },
+    {
+      "$id": "105",
+      "activityId": "855ed56a-7ae3-4503-99ff-3d3c659631e0",
+      "type": "Fork",
+      "displayName": "Reminder Fork",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "106",
+          "name": "Branches",
+          "expressions": {
+            "$id": "107",
+            "Json": "[\"Reminder Email\",\"Purge Account\"]"
+          }
+        }
+      ],
+      "propertyStorageProviders": {}
+    },
+    {
+      "$id": "108",
+      "activityId": "192e628d-7560-42dd-9392-de51fe1de80c",
+      "type": "WriteHttpResponse",
+      "displayName": "HTTP Response",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "109",
+          "name": "Content",
+          "expressions": {
+            "$id": "110",
+            "Literal": "<h1>User not found!</h1>"
+          }
+        },
+        {
+          "$id": "111",
+          "name": "ContentType",
+          "expressions": {
+            "$id": "112",
+            "Literal": "text/html"
+          }
+        },
+        {
+          "$id": "113",
+          "name": "StatusCode",
+          "expressions": {
+            "$id": "114"
+          }
+        },
+        {
+          "$id": "115",
+          "name": "CharSet",
+          "expressions": {
+            "$id": "116"
+          }
+        },
+        {
+          "$id": "117",
+          "name": "ResponseHeaders",
+          "expressions": {
+            "$id": "118"
+          }
+        }
+      ],
+      "propertyStorageProviders": {}
+    },
+    {
+      "$id": "119",
+      "activityId": "1dcf980d-2bcd-44ee-bfa3-5f11c85bcab1",
+      "type": "SendEmail",
+      "displayName": "User Deleted Email",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "120",
+          "name": "From",
+          "expressions": {
+            "$id": "121",
+            "Literal": "workflow@acme.com"
+          }
+        },
+        {
+          "$id": "122",
+          "name": "To",
+          "expressions": {
+            "$id": "123"
+          }
+        },
+        {
+          "$id": "124",
+          "name": "Subject",
+          "expressions": {
+            "$id": "125",
+            "Literal": "Your account has been removed!"
+          }
+        },
+        {
+          "$id": "126",
+          "name": "Attachments",
+          "expressions": {
+            "$id": "127"
+          }
+        },
+        {
+          "$id": "128",
+          "name": "Body",
+          "syntax": "Liquid",
+          "expressions": {
+            "$id": "129",
+            "Liquid": "<p>Hello, {{ Activities.CreateUser.Output.Name }}!</p>\n<p>Your account has been removed due to non-activation.</p>"
+          }
+        },
+        {
+          "$id": "130",
+          "name": "Cc",
+          "expressions": {
+            "$id": "131"
+          }
+        },
+        {
+          "$id": "132",
+          "name": "Bcc",
+          "expressions": {
+            "$id": "133"
+          }
+        }
+      ],
+      "propertyStorageProviders": {}
+    },
+    {
+      "$id": "134",
+      "activityId": "29796c36-19e3-4174-bdb9-ae5a4a28df80",
+      "type": "StartAt",
+      "displayName": "Start At - Delete User",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "135",
+          "name": "Instant",
+          "syntax": "JavaScript",
+          "expressions": {
+            "$id": "136",
+            "JavaScript": "Duration.FromMinutes(5)"
+          }
+        }
+      ],
+      "propertyStorageProviders": {}
+    },
+    {
+      "$id": "137",
+      "activityId": "7bdd4c4f-5365-4186-b8f2-2c9ee580d231",
+      "type": "Join",
+      "displayName": "Join",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "138",
+          "name": "Mode",
+          "expressions": {
+            "$id": "139",
+            "Literal": "WaitAny"
+          }
+        }
+      ],
+      "propertyStorageProviders": {}
+    },
+    {
+      "$id": "140",
+      "activityId": "b836e1d0-ad86-4cb2-b4d3-3d637295cc1c",
+      "type": "Finish",
+      "displayName": "Finish",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "141",
+          "name": "ActivityOutput",
+          "expressions": {
+            "$id": "142"
+          }
+        },
+        {
+          "$id": "143",
+          "name": "OutcomeNames",
+          "expressions": {
+            "$id": "144"
+          }
+        }
+      ],
+      "propertyStorageProviders": {}
+    },
+    {
+      "$id": "145",
+      "activityId": "aec3920f-49e6-4605-aff5-e47cdebf9162",
+      "type": "DeleteUser",
+      "displayName": "Delete User",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "146",
+          "name": "UserId",
+          "syntax": "JavaScript",
+          "expressions": {
+            "$id": "147",
+            "JavaScript": "activities.CreateUser.Output().Id;"
+          }
+        }
+      ],
+      "propertyStorageProviders": {}
+    }
+  ],
+  "connections": [
+    {
+      "$id": "148",
+      "sourceActivityId": "c8a80423-1ef4-4d0c-8440-46f519f3849d",
+      "targetActivityId": "eae1517c-bb9b-4042-9723-9595be2011f5",
+      "outcome": "Done"
+    },
+    {
+      "$id": "149",
+      "sourceActivityId": "eae1517c-bb9b-4042-9723-9595be2011f5",
+      "targetActivityId": "9e8fbbba-ee14-4802-84b0-a1511591e4e2",
+      "outcome": "Done"
+    },
+    {
+      "$id": "150",
+      "sourceActivityId": "9e8fbbba-ee14-4802-84b0-a1511591e4e2",
+      "targetActivityId": "c6599fcb-2ff5-4397-bf8c-e57c2489c88d",
+      "outcome": "Done"
+    },
+    {
+      "$id": "151",
+      "sourceActivityId": "c6599fcb-2ff5-4397-bf8c-e57c2489c88d",
+      "targetActivityId": "2918e1e9-beb8-4b18-914d-af48094fd879",
+      "outcome": "Done"
+    },
+    {
+      "$id": "152",
+      "sourceActivityId": "2918e1e9-beb8-4b18-914d-af48094fd879",
+      "targetActivityId": "f6efd04d-9e23-4fcd-8f71-3fd8a949ef90",
+      "outcome": "Activate"
+    },
+    {
+      "$id": "153",
+      "sourceActivityId": "a8e1fb4f-e8db-4ee4-94c0-9b167ac68c09",
+      "targetActivityId": "7b668666-fa51-46d9-801f-fdb145410433",
+      "outcome": "Done"
+    },
+    {
+      "$id": "154",
+      "sourceActivityId": "7b668666-fa51-46d9-801f-fdb145410433",
+      "targetActivityId": "a8e1fb4f-e8db-4ee4-94c0-9b167ac68c09",
+      "outcome": "Done"
+    },
+    {
+      "$id": "155",
+      "sourceActivityId": "f6efd04d-9e23-4fcd-8f71-3fd8a949ef90",
+      "targetActivityId": "70f1ae97-d085-4903-bd7f-e707b183eeac",
+      "outcome": "Done"
+    },
+    {
+      "$id": "156",
+      "sourceActivityId": "70f1ae97-d085-4903-bd7f-e707b183eeac",
+      "targetActivityId": "7b7f764e-d4f8-441a-bb06-cee6dce87702",
+      "outcome": "Done"
+    },
+    {
+      "$id": "157",
+      "sourceActivityId": "70f1ae97-d085-4903-bd7f-e707b183eeac",
+      "targetActivityId": "054b9529-d995-41bd-bf6e-877529a1d9b7",
+      "outcome": "Not Found"
+    },
+    {
+      "$id": "158",
+      "sourceActivityId": "7b7f764e-d4f8-441a-bb06-cee6dce87702",
+      "targetActivityId": "7ef921f5-f90f-4a13-82f2-4b804b496391",
+      "outcome": "Done"
+    },
+    {
+      "$id": "159",
+      "sourceActivityId": "2918e1e9-beb8-4b18-914d-af48094fd879",
+      "targetActivityId": "855ed56a-7ae3-4503-99ff-3d3c659631e0",
+      "outcome": "Reminder"
+    },
+    {
+      "$id": "160",
+      "sourceActivityId": "855ed56a-7ae3-4503-99ff-3d3c659631e0",
+      "targetActivityId": "a8e1fb4f-e8db-4ee4-94c0-9b167ac68c09",
+      "outcome": "Reminder Email"
+    },
+    {
+      "$id": "161",
+      "sourceActivityId": "1dcf980d-2bcd-44ee-bfa3-5f11c85bcab1",
+      "targetActivityId": "192e628d-7560-42dd-9392-de51fe1de80c",
+      "outcome": "Done"
+    },
+    {
+      "$id": "162",
+      "sourceActivityId": "855ed56a-7ae3-4503-99ff-3d3c659631e0",
+      "targetActivityId": "29796c36-19e3-4174-bdb9-ae5a4a28df80",
+      "outcome": "Purge Account"
+    },
+    {
+      "$id": "163",
+      "sourceActivityId": "7ef921f5-f90f-4a13-82f2-4b804b496391",
+      "targetActivityId": "7bdd4c4f-5365-4186-b8f2-2c9ee580d231",
+      "outcome": "Done"
+    },
+    {
+      "$id": "164",
+      "sourceActivityId": "054b9529-d995-41bd-bf6e-877529a1d9b7",
+      "targetActivityId": "7bdd4c4f-5365-4186-b8f2-2c9ee580d231",
+      "outcome": "Done"
+    },
+    {
+      "$id": "165",
+      "sourceActivityId": "7bdd4c4f-5365-4186-b8f2-2c9ee580d231",
+      "targetActivityId": "b836e1d0-ad86-4cb2-b4d3-3d637295cc1c",
+      "outcome": "Done"
+    },
+    {
+      "$id": "166",
+      "sourceActivityId": "192e628d-7560-42dd-9392-de51fe1de80c",
+      "targetActivityId": "7bdd4c4f-5365-4186-b8f2-2c9ee580d231",
+      "outcome": "Done"
+    },
+    {
+      "$id": "167",
+      "sourceActivityId": "29796c36-19e3-4174-bdb9-ae5a4a28df80",
+      "targetActivityId": "aec3920f-49e6-4605-aff5-e47cdebf9162",
+      "outcome": "Done"
+    },
+    {
+      "$id": "168",
+      "sourceActivityId": "aec3920f-49e6-4605-aff5-e47cdebf9162",
+      "targetActivityId": "1dcf980d-2bcd-44ee-bfa3-5f11c85bcab1",
+      "outcome": "Done"
+    }
+  ],
+  "id": "6b861c5c799742288331c39f23e3565c"
+}

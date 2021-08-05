@@ -12,6 +12,7 @@ namespace VueCore
         {
             return elsa
                 .AddActivity<CreateUser>()
+                .AddActivity<DeleteUser>()
                 .AddActivity<ActivateUser>();
 
         }

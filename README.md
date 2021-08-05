@@ -70,8 +70,6 @@ Then execute
 npm install
 ```
 
-
-
 ### Compiles and hot-reloads for development
 Yarn:
 
@@ -84,7 +82,6 @@ npm:
 ```
 npm start
 ```
-
 
 ### Compiles and minifies for production
 Yarn:
@@ -143,7 +140,6 @@ Connect to the Azure portal with your browser and go to your media services acco
 
 ```
 dotnet ef migrations add MIGRATION_NAME -c BlogContext -o Data/Migrations
-
 ```
 
 ## Elsa Dashboard
@@ -151,10 +147,13 @@ dotnet ef migrations add MIGRATION_NAME -c BlogContext -o Data/Migrations
 ```
 docker run -t -i -e ELSA__SERVER__BASEADDRESS='https://localhost:5001' -p 14000:80 elsaworkflows/elsa-dashboard:latest
 ```
+or (to run both Dashboard and SMTP)
+```
+docker compose up -d
+```
 
 Access Elsa dashboard: 
 http://localhost:14000/
-
 
 
 ## Local SMTP via Docker
@@ -163,7 +162,13 @@ http://localhost:14000/
 docker run -p 3000:80 -p 2525:25 rnwood/smtp4dev:linux-amd64-3.1.0-ci0856
 ```
 
-SMTP:
+or (to run both Dashboard and SMTP)
+
+```
+docker compose up -d
+```
+
+### SMTP:
 
 ```
 Server: localhost
@@ -172,4 +177,3 @@ Port: 2525
 
 Access SMTP dashboard: 
 http://localhost:3000/
-

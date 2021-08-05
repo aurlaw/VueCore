@@ -6,25 +6,23 @@ using Elsa.Expressions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using VueCore.Data;
-using VueCore.Services.Security;
 using Elsa;
 using System.Threading.Tasks;
 using Elsa.ActivityResults;
-using VueCore.Models.Domain;
 using System;
 using System.Linq;
 
 namespace VueCore.Models.Activities
 {
     [Activity(Category = "Users", 
-        Description = "Activate a User", 
-        Outcomes = new[] { OutcomeNames.Done, "Not Found"  })]
-    public class ActivateUser : Activity
+        Description = "Delete a User", 
+        Outcomes = new[] { OutcomeNames.Done })]
+    public class DeleteUser : Activity
     {
         private readonly IDbContextFactory<BlogContext> _blogContextFactory;
-        private readonly ILogger<ActivateUser> _logger;
+        private readonly ILogger<DeleteUser> _logger;
 
-        public ActivateUser(IDbContextFactory<BlogContext> blogContextFactory, ILogger<ActivateUser> logger)
+        public DeleteUser(IDbContextFactory<BlogContext> blogContextFactory, ILogger<DeleteUser> logger)
         {
             _blogContextFactory = blogContextFactory;
             _logger = logger;
@@ -42,16 +40,12 @@ namespace VueCore.Models.Activities
             var existingUser = await dbContext.Users.AsQueryable()
                 .Where(u => u.Id == UserId)
                 .FirstOrDefaultAsync(context.CancellationToken);
-            if (existingUser == null)
-                return Outcome("Not Found");
-            
-            existingUser.IsActive = true;
-            dbContext.Update(existingUser);
-
-            await dbContext.SaveChangesAsync(context.CancellationToken);
-
+            if(existingUser != null) 
+            {
+                dbContext.Users.Remove(existingUser);
+                await dbContext.SaveChangesAsync(context.CancellationToken);
+            }
             return Done();
         }
-
     }
 }

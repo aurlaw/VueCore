@@ -2,6 +2,7 @@ using Elsa.Services;
 using Elsa.Services.Models;
 using Elsa.Attributes;
 using Elsa.Expressions;
+using Microsoft.Extensions.Configuration;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -23,14 +24,16 @@ namespace VueCore.Models.Activities
         private readonly IDbContextFactory<BlogContext> _blogContextFactory;
         private readonly ILogger<CreateUser> _logger;
         private readonly IPasswordHasher _passwordHasher;
+        private readonly IConfiguration _configuration;
 
-        public CreateUser(IDbContextFactory<BlogContext> blogContextFactory, ILogger<CreateUser> logger, IPasswordHasher passwordHasher)
+        public CreateUser(IDbContextFactory<BlogContext> blogContextFactory, ILogger<CreateUser> logger, IPasswordHasher passwordHasher, IConfiguration configuration)
         {
             _blogContextFactory = blogContextFactory;
             _logger = logger;
             _passwordHasher = passwordHasher;
+            _configuration = configuration;
         }
-        
+
         [ActivityInput(
             Label = "UserName",
             Hint = "Enter an expression that evaluates to the name of the user to create.",
@@ -55,6 +58,9 @@ namespace VueCore.Models.Activities
         [ActivityOutput] 
         public User Output {get; set;} = default!;
 
+        [ActivityOutput] 
+        public string Expiration {get;set;} = default!;
+
         protected override async ValueTask<IActivityExecutionResult> OnExecuteAsync(ActivityExecutionContext context)
         {
             var hashedPassword = _passwordHasher.HashPassword(Password);
@@ -73,6 +79,14 @@ namespace VueCore.Models.Activities
             await dbContext.Users.AddAsync(user, context.CancellationToken);
             await dbContext.SaveChangesAsync(context.CancellationToken);
             Output = user;
+
+            //
+            if(!double.TryParse(_configuration["Elsa:Registration:ExpirationTimeMin"], out var expMin)) 
+            {
+                expMin = 5;
+            }
+            Expiration = DateTime.Now.AddMinutes(expMin).ToString();
+
             return Done();
         }
     }
