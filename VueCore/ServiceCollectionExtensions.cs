@@ -3,6 +3,7 @@ using VueCore.Models.Activities;
 using Elsa;
 using Elsa.Scripting.Liquid.Services;
 using VueCore.Definitions.JavaScript;
+using VueCore.Services.Handlers;
 
 namespace VueCore
 {
@@ -13,14 +14,20 @@ namespace VueCore
             return elsa
                 .AddActivity<CreateUser>()
                 .AddActivity<DeleteUser>()
-                .AddActivity<ActivateUser>();
+                .AddActivity<ActivateUser>()
+                .AddActivity<GetDocument>();
 
         }
 
         public static IServiceCollection AddElsaDefinitions(this IServiceCollection services)
         {
+            /*Note: AddNotificationHandlersFrom is a part of the Elsa library but uses MediatR under the hood
+            since we are using MediatR and are registering all handlers at startup  - we dont need to call this directly
+            - if so, we will create duplicate events
+            */ 
              return services
-                .AddNotificationHandlersFrom<LiquidHandler>()
+                // .AddNotificationHandlersFrom<LiquidHandler>()
+                // .AddNotificationHandlersFrom<StartDocumentWorkflowsHandler>()
                 .AddJavaScriptTypeDefinitionProvider<WorkflowDefinitionProvider>();   
         }
     }

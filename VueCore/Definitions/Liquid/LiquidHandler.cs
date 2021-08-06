@@ -5,6 +5,7 @@ using MediatR;
 using VueCore.Models;
 using VueCore.Models.Domain;
 using Fluid;
+using VueCore.Models.Activities;
 
 namespace VueCore.Definitions.Liquid
 {
@@ -14,6 +15,7 @@ namespace VueCore.Definitions.Liquid
         {
             notification.TemplateContext.Options.MemberAccessStrategy.Register<User>();
             notification.TemplateContext.Options.MemberAccessStrategy.Register<RegistrationModel>();
+            notification.TemplateContext.Options.MemberAccessStrategy.Register<DocumentFile>();
             return Task.CompletedTask;
         }
     }

@@ -95,7 +95,7 @@ namespace VueCore
                 return new BackgroundTaskQueue(queueCapacity);
             });
             services.AddSingleton<IPasswordHasher, PasswordHasher>();
-
+            services.AddSingleton<IDocumentService, DocumentService>();
             // routing/controllers
             services.AddElsaApiEndpoints();
             services.AddRouting(options => options.LowercaseUrls = true);

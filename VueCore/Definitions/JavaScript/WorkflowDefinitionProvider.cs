@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Elsa.Scripting.JavaScript.Services;
 using VueCore.Models;
+using VueCore.Models.Activities;
 using VueCore.Models.Domain;
 
 namespace VueCore.Definitions.JavaScript
@@ -12,7 +13,7 @@ namespace VueCore.Definitions.JavaScript
     {
         public override ValueTask<IEnumerable<Type>> CollectTypesAsync(TypeDefinitionContext context, CancellationToken cancellationToken = default)
         {
-            var types = new[]{typeof(User), typeof(RegistrationModel)};
+            var types = new[]{typeof(User), typeof(RegistrationModel), typeof(DocumentFile)};
             return new ValueTask<IEnumerable<Type>>(types);
         }
     }
