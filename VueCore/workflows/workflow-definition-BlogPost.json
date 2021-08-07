@@ -1,0 +1,252 @@
+{
+  "$id": "1",
+  "definitionId": "84e9d3ac8d1f4ef6a803b1abe06b4c04",
+  "versionId": "9e681fbc4753493692b209c3452c555a",
+  "name": "BlogPostWorkFlow",
+  "displayName": "BlogPost Work Flow",
+  "version": 10,
+  "variables": {
+    "$id": "2",
+    "data": {}
+  },
+  "customAttributes": {
+    "$id": "3",
+    "data": {}
+  },
+  "contextOptions": {
+    "$id": "4",
+    "contextType": "VueCore.Models.Domain.BlogPost, VueCore",
+    "contextFidelity": "Burst"
+  },
+  "isSingleton": false,
+  "persistenceBehavior": "Suspended",
+  "deleteCompletedInstances": false,
+  "isPublished": true,
+  "isLatest": true,
+  "activities": [
+    {
+      "$id": "5",
+      "activityId": "2f55c85c-2949-409c-9dfd-2e71fd45c4e6",
+      "type": "HttpEndpoint",
+      "name": "HttpEndpointBP",
+      "displayName": "HTTP Endpoint",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": true,
+      "properties": [
+        {
+          "$id": "6",
+          "name": "Path",
+          "expressions": {
+            "$id": "7",
+            "Literal": "/elsa/v2/blogpost"
+          }
+        },
+        {
+          "$id": "8",
+          "name": "Methods",
+          "expressions": {
+            "$id": "9",
+            "Json": "[\"POST\"]"
+          }
+        },
+        {
+          "$id": "10",
+          "name": "ReadContent",
+          "expressions": {
+            "$id": "11",
+            "Literal": "true"
+          }
+        },
+        {
+          "$id": "12",
+          "name": "TargetType",
+          "expressions": {
+            "$id": "13",
+            "Literal": "VueCore.Models.Domain.BlogPost, VueCore"
+          }
+        }
+      ],
+      "propertyStorageProviders": {
+        "Output": "Default"
+      }
+    },
+    {
+      "$id": "14",
+      "activityId": "41d79534-3b23-4751-8df2-00617e178b8f",
+      "type": "WriteHttpResponse",
+      "displayName": "HTTP Response",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "15",
+          "name": "Content",
+          "syntax": "JavaScript",
+          "expressions": {
+            "$id": "16",
+            "Literal": "",
+            "JavaScript": "const model = {\n    blogPost: workflowContext,\n    workflowInstanceId: workflowInstanceId,\n    body: input.Body\n}\n\nreturn JSON.stringify(model, null, 2);"
+          }
+        },
+        {
+          "$id": "17",
+          "name": "ContentType",
+          "expressions": {
+            "$id": "18",
+            "Literal": "application/json"
+          }
+        },
+        {
+          "$id": "19",
+          "name": "StatusCode",
+          "expressions": {
+            "$id": "20"
+          }
+        },
+        {
+          "$id": "21",
+          "name": "CharSet",
+          "expressions": {
+            "$id": "22"
+          }
+        },
+        {
+          "$id": "23",
+          "name": "ResponseHeaders",
+          "expressions": {
+            "$id": "24"
+          }
+        }
+      ],
+      "propertyStorageProviders": {}
+    },
+    {
+      "$id": "25",
+      "activityId": "e3c4967f-c890-48cc-82fa-10b6926e24a9",
+      "type": "SignalReceived",
+      "displayName": "Signal Received",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "26",
+          "name": "Signal",
+          "expressions": {
+            "$id": "27",
+            "Literal": "Publish"
+          }
+        }
+      ],
+      "propertyStorageProviders": {}
+    },
+    {
+      "$id": "28",
+      "activityId": "31913ad3-3fb2-40f0-95d3-8f6b9da8404f",
+      "type": "RunJavaScript",
+      "displayName": "Run Java Script",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "29",
+          "name": "Script",
+          "syntax": "Literal",
+          "expressions": {
+            "$id": "30",
+            "Literal": "workflowContext.IsPublished = true;"
+          }
+        },
+        {
+          "$id": "31",
+          "name": "PossibleOutcomes",
+          "expressions": {
+            "$id": "32"
+          }
+        }
+      ],
+      "propertyStorageProviders": {}
+    },
+    {
+      "$id": "33",
+      "activityId": "a99c2605-42fd-4fe7-88c3-adce317418fd",
+      "type": "WriteHttpResponse",
+      "displayName": "HTTP Response",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "34",
+          "name": "Content",
+          "syntax": "JavaScript",
+          "expressions": {
+            "$id": "35",
+            "Literal": "",
+            "JavaScript": "JSON.stringify(workflowContext)"
+          }
+        },
+        {
+          "$id": "36",
+          "name": "ContentType",
+          "expressions": {
+            "$id": "37",
+            "Literal": "application/json"
+          }
+        },
+        {
+          "$id": "38",
+          "name": "StatusCode",
+          "expressions": {
+            "$id": "39"
+          }
+        },
+        {
+          "$id": "40",
+          "name": "CharSet",
+          "expressions": {
+            "$id": "41"
+          }
+        },
+        {
+          "$id": "42",
+          "name": "ResponseHeaders",
+          "expressions": {
+            "$id": "43"
+          }
+        }
+      ],
+      "propertyStorageProviders": {}
+    }
+  ],
+  "connections": [
+    {
+      "$id": "44",
+      "sourceActivityId": "2f55c85c-2949-409c-9dfd-2e71fd45c4e6",
+      "targetActivityId": "41d79534-3b23-4751-8df2-00617e178b8f",
+      "outcome": "Done"
+    },
+    {
+      "$id": "45",
+      "sourceActivityId": "41d79534-3b23-4751-8df2-00617e178b8f",
+      "targetActivityId": "e3c4967f-c890-48cc-82fa-10b6926e24a9",
+      "outcome": "Done"
+    },
+    {
+      "$id": "46",
+      "sourceActivityId": "e3c4967f-c890-48cc-82fa-10b6926e24a9",
+      "targetActivityId": "31913ad3-3fb2-40f0-95d3-8f6b9da8404f",
+      "outcome": "Done"
+    },
+    {
+      "$id": "47",
+      "sourceActivityId": "31913ad3-3fb2-40f0-95d3-8f6b9da8404f",
+      "targetActivityId": "a99c2605-42fd-4fe7-88c3-adce317418fd",
+      "outcome": "Done"
+    }
+  ],
+  "id": "9e681fbc4753493692b209c3452c555a"
+}

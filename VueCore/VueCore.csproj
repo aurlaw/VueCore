@@ -2,9 +2,9 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <UserSecretsId>6cf3da59-22d1-4d5a-9dc6-405c2589cacc</UserSecretsId>
-    <AssemblyVersion>1.5.0.20</AssemblyVersion>
-    <FileVersion>1.5.0.20</FileVersion>
-    <Version>1.5.1.20</Version>
+    <AssemblyVersion>1.5.0.21</AssemblyVersion>
+    <FileVersion>1.5.0.21</FileVersion>
+    <Version>1.5.1.21</Version>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Azure.Storage.Blobs" Version="12.8.4" />

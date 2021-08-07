@@ -39,6 +39,7 @@ namespace VueCore.Models.Activities
         protected override async ValueTask<IActivityExecutionResult> OnExecuteAsync(ActivityExecutionContext context)
         {
             var document = await _docService.GetAsync(DocumentId, context.CancellationToken);
+            _logger.LogInformation($"Returning document: {document.Name}");
             Output = new DocumentFile(document);
             return Done();
         }

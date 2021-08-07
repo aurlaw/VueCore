@@ -13,7 +13,7 @@ namespace VueCore.Definitions.JavaScript
     {
         public override ValueTask<IEnumerable<Type>> CollectTypesAsync(TypeDefinitionContext context, CancellationToken cancellationToken = default)
         {
-            var types = new[]{typeof(User), typeof(RegistrationModel), typeof(DocumentFile)};
+            var types = new[]{typeof(User), typeof(RegistrationModel), typeof(DocumentFile), typeof(Document)};
             return new ValueTask<IEnumerable<Type>>(types);
         }
     }

@@ -7,6 +7,7 @@ const WebWorker = () => import('./components/WebWorker.vue');
 const Vision = () => import('./components/Vision.vue');
 const MediaEncoder = () => import('./components/MediaEncoder.vue');
 const SimpleRouter = () => import('./components/route-comp/SimpleRouter.vue');
+const DocumentManager = () => import('./components/DocumentManager.vue');
 
 Vue.config.productionTip = false
 
@@ -17,7 +18,8 @@ const APPS = {
     WebWorker,
     Vision,
     MediaEncoder,
-    SimpleRouter
+    SimpleRouter,
+    DocumentManager
 };
 
 function renderAppInElement(el) {

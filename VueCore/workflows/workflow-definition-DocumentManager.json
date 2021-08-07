@@ -1,0 +1,124 @@
+{
+  "$id": "1",
+  "definitionId": "67dd4b48449546a983d09b573b3b03b8",
+  "versionId": "88a5a617c05e4654968d9d587a3ce5fb",
+  "name": "DocumentManager",
+  "displayName": "Document Manager",
+  "version": 8,
+  "variables": {
+    "$id": "2",
+    "data": {}
+  },
+  "customAttributes": {
+    "$id": "3",
+    "data": {}
+  },
+  "isSingleton": false,
+  "persistenceBehavior": "WorkflowBurst",
+  "deleteCompletedInstances": false,
+  "isPublished": true,
+  "isLatest": true,
+  "tag": "DocumentManagement",
+  "activities": [
+    {
+      "$id": "4",
+      "activityId": "b789bc01-9460-4672-b716-fdde5e2b0bb1",
+      "type": "GetDocument",
+      "name": "GetDocument",
+      "displayName": "Get Document",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "5",
+          "name": "DocumentId",
+          "syntax": "JavaScript",
+          "expressions": {
+            "$id": "6",
+            "JavaScript": "correlationId"
+          }
+        }
+      ],
+      "propertyStorageProviders": {}
+    },
+    {
+      "$id": "7",
+      "activityId": "a879092c-16a8-4dde-b5f1-b5fe23f7fefe",
+      "type": "SendEmail",
+      "displayName": "Send Email",
+      "persistWorkflow": false,
+      "loadWorkflowContext": false,
+      "saveWorkflowContext": false,
+      "properties": [
+        {
+          "$id": "8",
+          "name": "From",
+          "expressions": {
+            "$id": "9",
+            "Literal": "workflow@acme.com"
+          }
+        },
+        {
+          "$id": "10",
+          "name": "To",
+          "expressions": {
+            "$id": "11",
+            "Json": "[\"mlawrence@acme.com\"]"
+          }
+        },
+        {
+          "$id": "12",
+          "name": "Subject",
+          "syntax": "Liquid",
+          "expressions": {
+            "$id": "13",
+            "JavaScript": "",
+            "Liquid": "Document Received: {{ Activities.GetDocument.Output.Document.Name }}"
+          }
+        },
+        {
+          "$id": "14",
+          "name": "Attachments",
+          "expressions": {
+            "$id": "15"
+          }
+        },
+        {
+          "$id": "16",
+          "name": "Body",
+          "syntax": "Liquid",
+          "expressions": {
+            "$id": "17",
+            "JavaScript": "",
+            "Liquid": "<p>The following document has been created:<p>\n<p>Name: {{ Activities.GetDocument.Output.Document.Name }}</p>\n<p>Notes: {{ Activities.GetDocument.Output.Document.Notes }}</p>\n<p>Created: {{ Activities.GetDocument.Output.Document.CreatedAt }}</p>"
+          }
+        },
+        {
+          "$id": "18",
+          "name": "Cc",
+          "expressions": {
+            "$id": "19"
+          }
+        },
+        {
+          "$id": "20",
+          "name": "Bcc",
+          "expressions": {
+            "$id": "21"
+          }
+        }
+      ],
+      "propertyStorageProviders": {}
+    }
+  ],
+  "connections": [
+    {
+      "$id": "22",
+      "sourceActivityId": "b789bc01-9460-4672-b716-fdde5e2b0bb1",
+      "targetActivityId": "a879092c-16a8-4dde-b5f1-b5fe23f7fefe",
+      "outcome": "Done"
+    }
+  ],
+  "id": "88a5a617c05e4654968d9d587a3ce5fb"
+}

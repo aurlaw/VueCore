@@ -16,6 +16,7 @@ namespace VueCore.Definitions.Liquid
             notification.TemplateContext.Options.MemberAccessStrategy.Register<User>();
             notification.TemplateContext.Options.MemberAccessStrategy.Register<RegistrationModel>();
             notification.TemplateContext.Options.MemberAccessStrategy.Register<DocumentFile>();
+            notification.TemplateContext.Options.MemberAccessStrategy.Register<Document>();
             return Task.CompletedTask;
         }
     }
