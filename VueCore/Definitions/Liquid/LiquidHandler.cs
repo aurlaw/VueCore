@@ -6,6 +6,7 @@ using VueCore.Models;
 using VueCore.Models.Domain;
 using Fluid;
 using VueCore.Models.Activities;
+using VueCore.Events;
 
 namespace VueCore.Definitions.Liquid
 {
@@ -17,6 +18,9 @@ namespace VueCore.Definitions.Liquid
             notification.TemplateContext.Options.MemberAccessStrategy.Register<RegistrationModel>();
             notification.TemplateContext.Options.MemberAccessStrategy.Register<DocumentFile>();
             notification.TemplateContext.Options.MemberAccessStrategy.Register<Document>();
+            notification.TemplateContext.Options.MemberAccessStrategy.Register<FileModel>();
+            notification.TemplateContext.Options.MemberAccessStrategy.Register<NewDocumentReceived>();
+
             return Task.CompletedTask;
         }
     }

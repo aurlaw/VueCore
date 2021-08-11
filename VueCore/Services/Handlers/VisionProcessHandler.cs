@@ -25,7 +25,6 @@ namespace VueCore.Services.Handlers
         public async Task<VisionResult> Handle(VisionProcessRequest request, CancellationToken cancellationToken)
         {
             _logger.LogInformation($"Process request: {request.FileName}");
-
             var imgUrl = await _storageService.SaveDocumentAsync(request.FileName, request.ContentType, request.DataStream, cancellationToken);
             VisionAnalysis analysis = null;
             string thumbnailUrl = null;

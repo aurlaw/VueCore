@@ -14,7 +14,8 @@
             <hr>
             Workflow
             <ul>
-                <li>Activity: Save file to Azure Storage</li>
+                <li><s>Activity: Starting point</s></li>
+                <li><s>Activity: Save file to Azure Storage</s></li>
                 <li>Activity: Update Document fileurl property</li>
                 <li>Activity: 
                     <ul>
@@ -22,7 +23,8 @@
                         <li>Save extracted txt to lucene index</li>
                     </ul>
                 </li>
-                <li>Activity: Send email with completion sucess</li>
+                <li><s>Activity: Retrive document by id</s></li>
+                <li><s>Activity: Send email with completion sucess</s></li>
             </ul>
         </div>
     </div>
@@ -103,8 +105,8 @@ export default {
             this.isProcessing = true;
             const headers =  { "x-vuecore-title": this.title , "x-vuecore-notes": this.notes};
             this.$refs.dropzone.setOption("headers", headers);
-            console.log("Process document");
-            //this.$refs.dropzone.processQueue();
+            // console.log("Process document");
+            this.$refs.dropzone.processQueue();
         },
         onFileAdded(file) {
             this.files.push(file.name);
@@ -115,6 +117,9 @@ export default {
             console.log(response);
             if(response.success) {
                 this.processedFiles.push(response);
+                this.title = '';
+                this.notes = '';
+                this.removeAllFiles();
             }
         },    
         onRemovedFile(file, error, xhr) {

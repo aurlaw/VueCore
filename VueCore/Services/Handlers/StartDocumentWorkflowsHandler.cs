@@ -25,9 +25,9 @@ namespace VueCore.Services.Handlers
 
         public async Task Handle(NewDocumentReceived notification, CancellationToken cancellationToken)
         {
-            var document = notification.Document;
+            // var document = notification.Document;
             var tagName = _configuration["Elsa:DocumentManager:TagName"];
-            _logger.LogInformation($"Start workflow ({tagName}) for document: {document.Id}");
+            _logger.LogInformation($"Start workflow ({tagName}) for document: {notification.Document.Id} and File: {notification.File.FileName}");
 
             // Get all workflow blueprints tagged with the received tag name.
             var workflowBlueprint = await _workflowRegistry.FindManyAsync(x => x.IsPublished && x.Tag == tagName, cancellationToken);
@@ -37,7 +37,8 @@ namespace VueCore.Services.Handlers
             {
                 var request = new ExecuteWorkflowDefinitionRequest(
                     workflow.Id,
-                    CorrelationId: document.Id
+                    Input: notification
+                    // CorrelationId: document.Id 
                 );
                 await _workflowDispatcher.DispatchAsync(request, cancellationToken);
             }

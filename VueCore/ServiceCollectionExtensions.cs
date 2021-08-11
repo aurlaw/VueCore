@@ -15,7 +15,10 @@ namespace VueCore
                 .AddActivity<CreateUser>()
                 .AddActivity<DeleteUser>()
                 .AddActivity<ActivateUser>()
+                .AddActivity<DocumentContainer>()
+                .AddActivity<UploadFile>()
                 .AddActivity<GetDocument>();
+
 
         }
 

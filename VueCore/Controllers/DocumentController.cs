@@ -79,6 +79,7 @@ namespace VueCore.Controllers
                 }
                 // Publish event
                 await _mediatr.Publish(new NewDocumentReceived(document, fileModel), token);
+                return Ok(new { Success = true});
             }            
             return Ok(new { Success = false});
         }
