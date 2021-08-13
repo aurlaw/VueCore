@@ -17,6 +17,8 @@ namespace VueCore
                 .AddActivity<ActivateUser>()
                 .AddActivity<DocumentContainer>()
                 .AddActivity<UploadFile>()
+                .AddActivity<DocumentUpdateFile>()
+                .AddActivity<DocumentExtractor>()
                 .AddActivity<GetDocument>();
 
 

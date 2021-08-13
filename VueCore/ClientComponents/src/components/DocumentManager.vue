@@ -16,7 +16,7 @@
             <ul>
                 <li><s>Activity: Starting point</s></li>
                 <li><s>Activity: Save file to Azure Storage</s></li>
-                <li>Activity: Update Document fileurl property</li>
+                <li><s>Activity: Update Document fileurl property</s></li>
                 <li>Activity: 
                     <ul>
                         <li>Extract text from PDF</li>

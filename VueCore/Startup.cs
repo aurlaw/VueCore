@@ -96,6 +96,9 @@ namespace VueCore
             });
             services.AddSingleton<IPasswordHasher, PasswordHasher>();
             services.AddSingleton<IDocumentService, DocumentService>();
+            services.AddSingleton<IPdfExtractor, PdfExtractor>();
+            services.AddSingleton<ISearchService, SearchService>();
+
             // routing/controllers
             services.AddElsaApiEndpoints();
             services.AddRouting(options => options.LowercaseUrls = true);

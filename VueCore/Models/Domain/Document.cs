@@ -8,6 +8,7 @@ namespace VueCore.Models.Domain
         public string Notes {get;set;} = default!;
         public string FileUrl {get;set;} = default!;
         public DateTime CreatedAt {get;set;}
+        public DateTime UpdatedAt {get;set;}
 
     }
 }

@@ -8,5 +8,7 @@ namespace VueCore.Services
     {
          Task<Document> SaveDocumentAsync(string name, string notes, CancellationToken cancellationToken = default);
          Task<Document> GetAsync(string id, CancellationToken cancellationToken = default);
+         Task UpdateAsync(string id, string name, string notes, string fileUrl, CancellationToken cancellationToken = default);
+         Task UpdateWithFileAsync(string id, string fileUrl, CancellationToken cancellationToken = default);
     }
 }

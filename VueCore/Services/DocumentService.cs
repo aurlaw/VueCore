@@ -32,13 +32,44 @@ namespace VueCore.Services
                 Id = Guid.NewGuid().ToString("N"),
                 Name = name,
                 Notes = notes,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
             };
             await using var dbContext = _blogContextFactory.CreateDbContext();
             await dbContext.Documents.AddAsync(document, cancellationToken);
             await dbContext.SaveChangesAsync(cancellationToken);
 
             return document;
+        }
+
+        public async Task UpdateAsync(string id, string name, string notes, string fileUrl, CancellationToken cancellationToken = default)
+        {
+            await using var dbContext = _blogContextFactory.CreateDbContext();
+            var existingDoc = await dbContext.Documents.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+            if(existingDoc != null) 
+            {
+                existingDoc.Name = name;
+                existingDoc.Notes = notes;
+                existingDoc.FileUrl = fileUrl;
+                existingDoc.UpdatedAt = DateTime.UtcNow;
+
+                dbContext.Update(existingDoc);
+                await dbContext.SaveChangesAsync(cancellationToken);
+            }
+        }
+
+        public async Task UpdateWithFileAsync(string id, string fileUrl, CancellationToken cancellationToken = default)
+        {
+            await using var dbContext = _blogContextFactory.CreateDbContext();
+            var existingDoc = await dbContext.Documents.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+            if(existingDoc != null) 
+            {
+                existingDoc.FileUrl = fileUrl;
+                existingDoc.UpdatedAt = DateTime.UtcNow;
+
+                dbContext.Update(existingDoc);
+                await dbContext.SaveChangesAsync(cancellationToken);
+            }
         }
     }
 }
