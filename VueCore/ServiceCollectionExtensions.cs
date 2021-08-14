@@ -4,6 +4,9 @@ using Elsa;
 using Elsa.Scripting.Liquid.Services;
 using VueCore.Definitions.JavaScript;
 using VueCore.Services.Handlers;
+using VueCore.Services;
+using System;
+using VueCore.Models.Options;
 
 namespace VueCore
 {
@@ -19,9 +22,8 @@ namespace VueCore
                 .AddActivity<UploadFile>()
                 .AddActivity<DocumentUpdateFile>()
                 .AddActivity<DocumentExtractor>()
+                .AddActivity<DocumentAddIndex>()
                 .AddActivity<GetDocument>();
-
-
         }
 
         public static IServiceCollection AddElsaDefinitions(this IServiceCollection services)
@@ -34,6 +36,13 @@ namespace VueCore
                 // .AddNotificationHandlersFrom<LiquidHandler>()
                 // .AddNotificationHandlersFrom<StartDocumentWorkflowsHandler>()
                 .AddJavaScriptTypeDefinitionProvider<WorkflowDefinitionProvider>();   
+        }
+
+        public static IServiceCollection AddSearch(this IServiceCollection services, Action<SearchOptions> configureOptions) 
+        {
+            services.Configure(configureOptions);
+
+            return services.AddSingleton<ISearchService, SearchService>();
         }
     }
 }

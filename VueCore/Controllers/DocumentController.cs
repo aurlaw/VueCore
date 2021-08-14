@@ -17,11 +17,13 @@ namespace VueCore.Controllers
         private readonly ILogger<DocumentController> _logger;
         private readonly IMediator _mediatr;
         private readonly IDocumentService _docService;
-        public DocumentController(ILogger<DocumentController> logger, IMediator mediatr, IDocumentService docService)
+        private readonly ISearchService _searchService;
+        public DocumentController(ILogger<DocumentController> logger, IMediator mediatr, IDocumentService docService, ISearchService searchService)
         {
             _logger = logger;
             _mediatr = mediatr;
             _docService = docService;
+            _searchService = searchService;
         }
         public IActionResult Index()
         {
@@ -82,6 +84,14 @@ namespace VueCore.Controllers
                 return Ok(new { Success = true});
             }            
             return Ok(new { Success = false});
+        }
+
+        [HttpGet]
+        [Route("document/search")]
+        public async Task<IActionResult> Search([FromQuery]string term, CancellationToken token) 
+        {
+            var results = await _searchService.SearchAsync(term, token);
+            return Ok(results);
         }
     }
 }

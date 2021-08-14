@@ -2,9 +2,9 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <UserSecretsId>6cf3da59-22d1-4d5a-9dc6-405c2589cacc</UserSecretsId>
-    <AssemblyVersion>1.5.0.21</AssemblyVersion>
-    <FileVersion>1.5.0.21</FileVersion>
-    <Version>1.5.1.21</Version>
+    <AssemblyVersion>1.5.1.22</AssemblyVersion>
+    <FileVersion>1.5.1.22</FileVersion>
+    <Version>1.5.1.22</Version>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Azure.Storage.Blobs" Version="12.8.4"/>
@@ -38,5 +38,7 @@
     <PackageReference Include="BitMiracle.Docotic.Pdf" Version="8.1.12215"/>
     <PackageReference Include="Lucene.Net" Version="4.8.0-beta00014"/>
     <PackageReference Include="Lucene.Net.Analysis.Common" Version="4.8.0-beta00014"/>
+    <PackageReference Include="Lucene.Net.Queries" Version="4.8.0-beta00014"/>
+    <PackageReference Include="Lucene.Net.QueryParser" Version="4.8.0-beta00014"/>
   </ItemGroup>
 </Project>

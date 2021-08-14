@@ -6,26 +6,27 @@
           </div>
       </div>
     <div class="row">
-        <div class="col">
-            List/Filter documents.<br>
-            Add PDF file field<br>
-            Extract PDF content, save to Lucene index<br>
-            Search index <br>
-            <hr>
-            Workflow
-            <ul>
-                <li><s>Activity: Starting point</s></li>
-                <li><s>Activity: Save file to Azure Storage</s></li>
-                <li><s>Activity: Update Document fileurl property</s></li>
-                <li>Activity: 
-                    <ul>
-                        <li>Extract text from PDF</li>
-                        <li>Save extracted txt to lucene index</li>
-                    </ul>
-                </li>
-                <li><s>Activity: Retrive document by id</s></li>
-                <li><s>Activity: Send email with completion sucess</s></li>
-            </ul>
+        <div class="col-6">
+            <input type="text" v-model="searchTerm" class="form-control" placeholder="Enter Search term" />
+        </div>
+        <div class="col-6">
+              <button class="btn btn-primary" @click="searchDocuments">Search</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col" v-for="doc in searchResults" :key="doc.id">
+              <div class="card h-100">
+                <div class="card-body">
+                  <h5 class="card-title">{{doc.name}}</h5>
+                  <time> {{convertDate(doc.updateAd)}}</time>
+                  <p>
+                      {{doc.content}}
+                  </p>
+                </div>
+              </div>            
+        </div>
+        <div class="col" v-if="searchResults.length === 0">
+            No Results Found
         </div>
     </div>
     <div class="row doc-entry py-4">
@@ -87,6 +88,8 @@ export default {
       files: [],
       processedFiles:[],
       isProcessing:false,
+      searchResults:[],
+      searchTerm:'',
     }),
     components: {
         vueDropzone
@@ -97,6 +100,16 @@ export default {
         }
     },
     methods: {
+        searchDocuments() {
+            const _this = this;
+            const searchUrl = `/document/search?term=${this.searchTerm}`;
+            fetch(searchUrl)
+            .then(response => response.json())
+            .then(data => {
+                _this.searchResults = data;
+            });
+
+        },
         removeAllFiles() {
             this.$refs.dropzone.removeAllFiles();
             this.files = [];
@@ -126,7 +139,10 @@ export default {
             if(file && file.name) {
                 this.files = this.files.filter(f => f !== file.name);            
             }        
-        },               
+        },          
+        convertDate(dateStr) {
+            return new Date(dateStr).toDateString()
+        },  
         // createDoc() {
         //     const model = {name: this.title, notes: this.notes};
         //     // console.log('Save Document', model);

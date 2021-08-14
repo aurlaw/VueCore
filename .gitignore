@@ -482,3 +482,4 @@ VueCore/blog.db
 BAK/
 VueCore/blog.db-shm
 VueCore/blog.db-wal
+VueCore/wwwroot/DocumentIndex/*

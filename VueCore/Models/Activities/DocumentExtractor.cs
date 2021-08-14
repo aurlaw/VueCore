@@ -15,27 +15,19 @@ using VueCore.Services;
 namespace VueCore.Models.Activities
 {
      [Action(Category = "Document Management", 
-        Description = "Extracts content from PDF and saves to index")]
+        Description = "Extracts content from PDF")]
    public class DocumentExtractor : Activity
     {
        private readonly ILogger<DocumentExtractor> _logger;
        private readonly IPdfExtractor _extractor;
        private readonly IDocumentService _docService;
-       private readonly ISearchService _searchService;
 
-        public DocumentExtractor(ILogger<DocumentExtractor> logger, IPdfExtractor extractor, IDocumentService docService, ISearchService searchService)
+        public DocumentExtractor(ILogger<DocumentExtractor> logger, IPdfExtractor extractor, IDocumentService docService)
         {
             _logger = logger;
             _extractor = extractor;
             _docService = docService;
-            _searchService = searchService;
         }
-        [ActivityInput(
-            Label = "Document ID",
-            Hint = "The ID of the document to update",
-            SupportedSyntaxes = new[] {SyntaxNames.JavaScript, SyntaxNames.Liquid}
-        )]
-        public string DocumentId { get; set; } = default!;
 
         [ActivityInput(
             Label = "File  to upload",
@@ -43,6 +35,9 @@ namespace VueCore.Models.Activities
             SupportedSyntaxes = new[] {SyntaxNames.JavaScript, SyntaxNames.Liquid}
         )]
         public FileModel File {get;set;} = default!;
+
+        [ActivityOutput(Hint = "The Extracted Text")]
+        public string Output { get; set; } = default!;
 
         protected override async ValueTask<IActivityExecutionResult> OnExecuteAsync(ActivityExecutionContext context)
         {
@@ -52,19 +47,9 @@ namespace VueCore.Models.Activities
             _logger.LogInformation("Extracted Content");
             _logger.LogInformation(pdfText);
             _logger.LogInformation("-------------------");
-            _logger.LogInformation("Save to index");
-            await AddToSearchIndex(pdfText, context.CancellationToken);
+            Output = pdfText;
             return Done();
         }
 
-        private async Task AddToSearchIndex(string pdfContent, CancellationToken cancellationToken = default) 
-        {
-            var document = await _docService.GetAsync(DocumentId, cancellationToken);
-            _logger.LogInformation($"Using document: {document.Name}");
-            var content = string.Concat(pdfContent, " ", document.Notes);
-            var searchDocument = new SearchDocument(document.Id, document.Name, content, document.UpdatedAt);
-            await _searchService.SaveDocumentAsync(searchDocument, cancellationToken);
-
-        }
     }
 }
