@@ -142,6 +142,17 @@ Connect to the Azure portal with your browser and go to your media services acco
 dotnet ef migrations add MIGRATION_NAME -c BlogContext -o Data/Migrations
 ```
 
+### Identity
+
+```
+dotnet ef migrations add MIGRATION_NAME -c VueCoreIdentityDbContext -o Areas/Identity/Data/Migrations
+```
+
+Update DB
+```
+dotnet ef database update -c VueCoreIdentityDbContext
+```
+
 ## Elsa Dashboard
 
 ```

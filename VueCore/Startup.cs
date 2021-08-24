@@ -105,6 +105,8 @@ namespace VueCore
             services.AddElsaApiEndpoints();
             services.AddRouting(options => options.LowercaseUrls = true);
             services.AddControllersWithViews();
+            services.AddRazorPages();
+
 
             // add mediatR
             services.AddMediatR(typeof(Startup).Assembly);   
@@ -131,6 +133,8 @@ namespace VueCore
             app.UseHttpActivities();
             app.UseRouting();
             app.UseCors();
+
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
@@ -145,6 +149,8 @@ namespace VueCore
                     ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
                 });                
                 endpoints.MapHealthChecksUI();
+                endpoints.MapRazorPages();
+
             });
 
         }
