@@ -26,7 +26,7 @@ namespace VueCore.Controllers
             _docService = docService;
             _searchService = searchService;
         }
-
+        [Authorize]
         public IActionResult Index()
         {
             return View();

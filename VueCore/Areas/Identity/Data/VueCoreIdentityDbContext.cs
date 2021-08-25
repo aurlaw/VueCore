@@ -5,10 +5,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using VueCore.Models.Domain;
 
 namespace VueCore.Areas.Identity.Data
 {
-    public class VueCoreIdentityDbContext : IdentityDbContext<IdentityUser>
+    public class VueCoreIdentityDbContext : IdentityDbContext<ApplicationUser>
     {
         public VueCoreIdentityDbContext(DbContextOptions<VueCoreIdentityDbContext> options)
             : base(options)

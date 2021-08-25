@@ -135,6 +135,12 @@ dotnet user-secrets set "AzureVision:ThumbnailHeight" "300"
 Use [sample.env](VueCore/sample.env) as a template for the .env file to be created. The .env file must be placed at the root of the sample (same location than sample.env).
 Connect to the Azure portal with your browser and go to your media services account / API access to get the .ENV data to store to the .env file.
 
+## Identity
+
+Scaffolding
+```
+dotnet aspnet-codegenerator identity -h
+```
 
 ## Entity Migrations
 
@@ -152,6 +158,8 @@ Update DB
 ```
 dotnet ef database update -c VueCoreIdentityDbContext
 ```
+
+
 
 ## Elsa Dashboard
 

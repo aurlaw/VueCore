@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using VueCore.Areas.Identity.Data;
+using VueCore.Models.Domain;
 
 [assembly: HostingStartup(typeof(VueCore.Areas.Identity.IdentityHostingStartup))]
 namespace VueCore.Areas.Identity
@@ -19,8 +20,12 @@ namespace VueCore.Areas.Identity
                     options.UseSqlite(
                         context.Configuration.GetConnectionString("Sqlite")));
 
-                services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
                     .AddEntityFrameworkStores<VueCoreIdentityDbContext>();
+
+                var elsaSection = context.Configuration.GetSection("Elsa");
+                services.AddEmailService(elsaSection.GetSection("Smtp").Bind);
+
             });
         }
     }
