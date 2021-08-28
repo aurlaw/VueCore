@@ -8,6 +8,7 @@ const Vision = () => import('./components/Vision.vue');
 const MediaEncoder = () => import('./components/MediaEncoder.vue');
 const SimpleRouter = () => import('./components/route-comp/SimpleRouter.vue');
 const DocumentManager = () => import('./components/DocumentManager.vue');
+const Payment = () => import('./components/Payment.vue');
 
 Vue.config.productionTip = false
 
@@ -19,7 +20,8 @@ const APPS = {
     Vision,
     MediaEncoder,
     SimpleRouter,
-    DocumentManager
+    DocumentManager,
+    Payment
 };
 
 function renderAppInElement(el) {

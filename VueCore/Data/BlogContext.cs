@@ -12,5 +12,6 @@ namespace VueCore.Data
         public DbSet<BlogPost> BlogPosts {get;set;} = default!;
         public DbSet<User> Users {get;set;} = default!;
         public DbSet<Document> Documents {get;set;} = default!;
+        public DbSet<Payment> Payments {get;set;} = default!;
     }
 }

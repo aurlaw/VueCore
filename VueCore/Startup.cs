@@ -97,6 +97,7 @@ namespace VueCore
             services.AddSingleton<IPasswordHasher, PasswordHasher>();
             services.AddSingleton<IDocumentService, DocumentService>();
             services.AddSingleton<IPdfExtractor, PdfExtractor>();
+            services.AddSingleton<IPaymentService, PaymentService>();
             // search service
             services.AddSearch(Configuration.GetSection("Search").Bind);
             
