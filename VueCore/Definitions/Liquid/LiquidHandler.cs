@@ -20,6 +20,9 @@ namespace VueCore.Definitions.Liquid
             notification.TemplateContext.Options.MemberAccessStrategy.Register<Document>();
             notification.TemplateContext.Options.MemberAccessStrategy.Register<FileModel>();
             notification.TemplateContext.Options.MemberAccessStrategy.Register<NewDocumentReceived>();
+            notification.TemplateContext.Options.MemberAccessStrategy.Register<SchedulePayment>();
+            notification.TemplateContext.Options.MemberAccessStrategy.Register<Payment>();
+            notification.TemplateContext.Options.MemberAccessStrategy.Register<ApplicationUser>();
 
             return Task.CompletedTask;
         }

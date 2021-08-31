@@ -19,6 +19,12 @@ namespace VueCore.Services
             _logger = logger;
         }
 
+        public async Task<Payment> GetPaymentAsync(string paymentId, CancellationToken cancellationToken = default)
+        {
+            await using var dbContext = _blogContextFactory.CreateDbContext();
+            return await dbContext.Payments.FirstOrDefaultAsync(p => p.Id == paymentId, cancellationToken);
+        }
+
         public async Task PaymentCompleteAsync(string paymentId, CancellationToken cancellationToken = default)
         {
             await using var dbContext = _blogContextFactory.CreateDbContext();
@@ -53,3 +59,11 @@ namespace VueCore.Services
         }
     }
 }
+/*
+        public async Task<Document> GetAsync(string id, CancellationToken cancellationToken = default)
+        {
+            await using var dbContext = _blogContextFactory.CreateDbContext();
+            return await dbContext.Documents.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+        }
+
+*/

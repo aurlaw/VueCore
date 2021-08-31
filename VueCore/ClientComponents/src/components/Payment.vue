@@ -5,6 +5,24 @@
                 <h1>{{name}}</h1>
           </div>
       </div>
+      <div class="row">
+          <div class="col">
+              <ul>
+                  <li>Payment Container</li>
+                  <li>Fork
+                      <ul>
+                      <li>Send Email of scheduled payment (Amount and Date)</li>
+                        <li>StartAt 
+                            <ul>
+                                <li>Payment Processor</li>
+                                <li>Send Email of completed payment  (Amount and Date)</li>
+                            </ul>
+                        </li>
+                      </ul>
+                  </li>
+              </ul>
+          </div>
+      </div>
     <div class="row payment py-4">
         <div class="col">
             <h3>Schedule Payment</h3>

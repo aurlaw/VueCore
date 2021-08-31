@@ -23,13 +23,24 @@ namespace VueCore.Services.Handlers
             _configuration = configuration;
         }
 
-        public Task Handle(SchedulePayment notification, CancellationToken cancellationToken)
+        public async Task Handle(SchedulePayment notification, CancellationToken cancellationToken)
         {
 
             var tagName = _configuration["Elsa:PaymentManager:TagName"];
             _logger.LogInformation($"Staring workflow ({tagName}) for payment: {notification.Payment.Id} and user: {notification.User.Email}");
-            return Task.CompletedTask;
 
+            // Get all workflow blueprints tagged with the received tag name.
+            var workflowBlueprint = await _workflowRegistry.FindManyAsync(x => x.IsPublished && x.Tag == tagName, cancellationToken);
+
+            // Dispatch each workflow. Each workflow will be correlated by Document ID.
+            foreach(var workflow in workflowBlueprint)
+            {
+                var request = new ExecuteWorkflowDefinitionRequest(
+                    workflow.Id,
+                    Input: notification
+                );
+                await _workflowDispatcher.DispatchAsync(request, cancellationToken);
+            }
         }
     }
 }

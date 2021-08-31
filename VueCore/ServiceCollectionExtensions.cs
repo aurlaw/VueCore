@@ -23,7 +23,10 @@ namespace VueCore
                 .AddActivity<DocumentUpdateFile>()
                 .AddActivity<DocumentExtractor>()
                 .AddActivity<DocumentAddIndex>()
-                .AddActivity<GetDocument>();
+                .AddActivity<GetDocument>()
+                .AddActivity<PaymentContainer>()
+                .AddActivity<PaymentProcessor>()
+                ;
         }
 
         public static IServiceCollection AddElsaDefinitions(this IServiceCollection services)
