@@ -7,49 +7,50 @@
     <Version>1.5.1.22</Version>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Azure.Storage.Blobs" Version="12.8.4"/>
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.9"/>
-    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="5.0.9"/>
-    <PackageReference Include="Microsoft.Azure.CognitiveServices.Vision.ComputerVision" Version="7.0.0"/>
-    <PackageReference Include="MediatR" Version="9.0.0"/>
-    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0"/>
-    <PackageReference Include="Microsoft.Azure.Management.Media" Version="3.0.4"/>
-    <PackageReference Include="Microsoft.Azure.EventGrid" Version="3.2.0"/>
-    <PackageReference Include="Microsoft.Azure.EventHubs.Processor" Version="4.3.2"/>
-    <PackageReference Include="Microsoft.Identity.Client" Version="4.31.0"/>
-    <PackageReference Include="dotenv.net" Version="3.0.0"/>
-    <PackageReference Include="AspNetCore.HealthChecks.System" Version="5.0.1"/>
-    <PackageReference Include="AspNetCore.HealthChecks.AzureStorage" Version="5.0.1"/>
-    <PackageReference Include="AspNetCore.HealthChecks.SignalR" Version="5.0.1"/>
-    <PackageReference Include="AspNetCore.HealthChecks.Publisher.ApplicationInsights" Version="5.0.1"/>
-    <PackageReference Include="AspNetCore.HealthChecks.Publisher.Prometheus" Version="5.0.1"/>
-    <PackageReference Include="AspNetCore.HealthChecks.UI" Version="5.0.1"/>
-    <PackageReference Include="AspNetCore.HealthChecks.UI.InMemory.Storage" Version="5.0.1"/>
-    <PackageReference Include="AspNetCore.HealthChecks.Network" Version="5.0.4"/>
-    <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="5.0.1"/>
-    <PackageReference Include="Elsa" Version="2.1.1.463"/>
-    <PackageReference Include="Elsa.Activities.Email" Version="2.1.1.463"/>
-    <PackageReference Include="Elsa.Activities.Http" Version="2.1.1.463"/>
-    <PackageReference Include="Elsa.Activities.Temporal.Quartz" Version="2.1.1.463"/>
-    <PackageReference Include="Elsa.Persistence.EntityFramework.Sqlite" Version="2.1.1.463"/>
-    <PackageReference Include="Elsa.Server.Api" Version="2.1.1.463"/>
-    <PackageReference Include="Elsa.Designer.Components.Web" Version="2.1.1.463"/>
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.8.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="5.0.17" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.9" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="5.0.9" />
+    <PackageReference Include="Microsoft.Azure.CognitiveServices.Vision.ComputerVision" Version="7.0.0" />
+    <PackageReference Include="MediatR" Version="9.0.0" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
+    <PackageReference Include="Microsoft.Azure.Management.Media" Version="3.0.4" />
+    <PackageReference Include="Microsoft.Azure.EventGrid" Version="3.2.0" />
+    <PackageReference Include="Microsoft.Azure.EventHubs.Processor" Version="4.3.2" />
+    <PackageReference Include="Microsoft.Identity.Client" Version="4.31.0" />
+    <PackageReference Include="dotenv.net" Version="3.0.0" />
+    <PackageReference Include="AspNetCore.HealthChecks.System" Version="5.0.1" />
+    <PackageReference Include="AspNetCore.HealthChecks.AzureStorage" Version="5.0.1" />
+    <PackageReference Include="AspNetCore.HealthChecks.SignalR" Version="5.0.1" />
+    <PackageReference Include="AspNetCore.HealthChecks.Publisher.ApplicationInsights" Version="5.0.1" />
+    <PackageReference Include="AspNetCore.HealthChecks.Publisher.Prometheus" Version="5.0.1" />
+    <PackageReference Include="AspNetCore.HealthChecks.UI" Version="5.0.1" />
+    <PackageReference Include="AspNetCore.HealthChecks.UI.InMemory.Storage" Version="5.0.1" />
+    <PackageReference Include="AspNetCore.HealthChecks.Network" Version="5.0.4" />
+    <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="5.0.1" />
+    <PackageReference Include="Elsa" Version="2.1.1.463" />
+    <PackageReference Include="Elsa.Activities.Email" Version="2.1.1.463" />
+    <PackageReference Include="Elsa.Activities.Http" Version="2.1.1.463" />
+    <PackageReference Include="Elsa.Activities.Temporal.Quartz" Version="2.1.1.463" />
+    <PackageReference Include="Elsa.Persistence.EntityFramework.Sqlite" Version="2.1.1.463" />
+    <PackageReference Include="Elsa.Server.Api" Version="2.1.1.463" />
+    <PackageReference Include="Elsa.Designer.Components.Web" Version="2.1.1.463" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.9">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.8"/>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.9">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="BitMiracle.Docotic.Pdf" Version="8.1.12215"/>
-    <PackageReference Include="Lucene.Net" Version="4.8.0-beta00014"/>
-    <PackageReference Include="Lucene.Net.Analysis.Common" Version="4.8.0-beta00014"/>
-    <PackageReference Include="Lucene.Net.Queries" Version="4.8.0-beta00014"/>
-    <PackageReference Include="Lucene.Net.QueryParser" Version="4.8.0-beta00014"/>
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.2"/>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.9"/>
-    <PackageReference Include="MailKit" Version="2.15.0"/>
+    <PackageReference Include="BitMiracle.Docotic.Pdf" Version="8.1.12215" />
+    <PackageReference Include="Lucene.Net" Version="4.8.0-beta00014" />
+    <PackageReference Include="Lucene.Net.Analysis.Common" Version="4.8.0-beta00014" />
+    <PackageReference Include="Lucene.Net.Queries" Version="4.8.0-beta00014" />
+    <PackageReference Include="Lucene.Net.QueryParser" Version="4.8.0-beta00014" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.9" />
+    <PackageReference Include="MailKit" Version="2.15.0" />
   </ItemGroup>
 </Project>

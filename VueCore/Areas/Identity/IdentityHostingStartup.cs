@@ -25,8 +25,22 @@ namespace VueCore.Areas.Identity
 
                 var elsaSection = context.Configuration.GetSection("Elsa");
                 services.AddEmailService(elsaSection.GetSection("Smtp").Bind);
+                
+                services.AddAuthentication().AddGoogle(googleOptions =>
+                {
+                    googleOptions.ClientId = context.Configuration["Authentication:Google:ClientId"];
+                    googleOptions.ClientSecret = context.Configuration["Authentication:Google:ClientSecret"];
+                });                
 
             });
         }
     }
 }
+/*
+ *services.AddAuthentication().AddGoogle(googleOptions =>
+    {
+        googleOptions.ClientId = configuration["Authentication:Google:ClientId"];
+        googleOptions.ClientSecret = configuration["Authentication:Google:ClientSecret"];
+    });
+ * 
+ */
